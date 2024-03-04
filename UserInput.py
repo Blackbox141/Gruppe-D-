@@ -6,4 +6,4 @@ def search_hotel():
 numberofdays = search_hotel()
 print(numberofdays)
 
-print("TEST UPDATE GITHUB")
+print("TEST UPDATE DennisHUB")
