@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75404a82-bde0-49ec-b301-93d24b48c699" name="Changes" comment="bruder">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="75404a82-bde0-49ec-b301-93d24b48c699" name="Changes" comment="test 2">
+      <change afterPath="$PROJECT_DIR$/UserInput.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search Conditon.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search Conditon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SearchHotel.py" beforeDir="false" afterPath="$PROJECT_DIR$/SearchHotel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SearchHotelFunction.py" beforeDir="false" afterPath="$PROJECT_DIR$/SearchHotelFunction.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,24 +34,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Search Conditon.executor": "Run",
-    "Python.SearchHotel.executor": "Run",
-    "Python.SearchHotelFunction.executor": "Run",
-    "Python.SearchMultipleCriteria.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "vcs.Git",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Search Conditon.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SearchHotel.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SearchHotelFunction.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SearchMultipleCriteria.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -74,7 +71,10 @@
       <option name="presentableId" value="Default" />
       <updated>1708932722151</updated>
       <workItem from="1708932724035" duration="10391000" />
-      <workItem from="1708945130175" duration="1466000" />
+      <workItem from="1708945130175" duration="2181000" />
+      <workItem from="1709475015468" duration="147000" />
+      <workItem from="1709475194875" duration="4000" />
+      <workItem from="1709539103838" duration="289000" />
     </task>
     <task id="LOCAL-00001" summary="bruder">
       <option name="closed" value="true" />
@@ -84,7 +84,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708946436575</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="test 2">
+      <option name="closed" value="true" />
+      <created>1708946610903</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1708946610903</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -92,7 +100,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="bruder" />
-    <option name="LAST_COMMIT_MESSAGE" value="bruder" />
+    <MESSAGE value="test 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="test 2" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/UE1_Classroom$SearchHotelFunction.coverage" NAME="SearchHotelFunction Coverage Results" MODIFIED="1708940622932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
