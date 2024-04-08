@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75404a82-bde0-49ec-b301-93d24b48c699" name="Changes" comment="test 2" />
+    <list default="true" id="75404a82-bde0-49ec-b301-93d24b48c699" name="Changes" comment="test 2">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search Conditon.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SearchHotel.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SearchHotelFunction.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SearchMultipleCriteria.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserInput.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,24 +38,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Search Conditon.executor": "Run",
-    "Python.SearchHotel.executor": "Run",
-    "Python.SearchHotelFunction.executor": "Run",
-    "Python.SearchMultipleCriteria.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Search Conditon.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SearchHotel.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SearchHotelFunction.executor&quot;: &quot;Run&quot;,
+    &quot;Python.SearchMultipleCriteria.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -73,6 +80,9 @@
       <workItem from="1709475194875" duration="4000" />
       <workItem from="1709539103838" duration="289000" />
       <workItem from="1710757984784" duration="290000" />
+      <workItem from="1710758892554" duration="1826000" />
+      <workItem from="1711311258126" duration="27000" />
+      <workItem from="1712563183908" duration="1148000" />
     </task>
     <task id="LOCAL-00001" summary="bruder">
       <option name="closed" value="true" />
