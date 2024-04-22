@@ -30,18 +30,6 @@ def generate_system_data(engine: Engine, verbose: bool = False) -> None:
 
 def generate_hotels(engine: Engine, verbose: bool = False) -> None:
     with Session(engine) as session:
-        single_room = RoomType(description="Einzelzimmer")
-        double_room = RoomType(description="Doppelzimmer")
-        family_room = RoomType(description="Familienzimmer")
-        suite = RoomType(description="Suite")
-        session.add_all([single_room, double_room, family_room])
-
-        tv43 = Amenity(description='TV - 43"')
-        tv50 = Amenity(description='TV - 50"')
-        tee_cooker = Amenity(description="Teekocher")
-        nespresso = Amenity(description="Nespresso Machine")
-        iron = Amenity(description="Bügeleisen")
-        session.add_all([tv43, tv50, tee_cooker, nespresso, iron])
 
         hotels_to_add = [
             Hotel(
@@ -53,31 +41,31 @@ def generate_hotels(engine: Engine, verbose: bool = False) -> None:
                     city="Olten"
                 ),
                 rooms=[
-                    Room(number="01", type=single_room, max_guests=1, description="One single bed", price=124.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="02", type=double_room, max_guests=2, description="One double bed", price=138.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="03", type=single_room, max_guests=1, description="One single bed", price=124.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="04", type=double_room, max_guests=2, description="Two single beds", price=138.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="05", type=family_room, max_guests=4,
-                         description="One queensized bed and two single beds", price=219.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="06", type=double_room, max_guests=2, description="One double bed", price=138.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="07", type=double_room, max_guests=2, description="One double bed", price=138.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="11", type=double_room, max_guests=2, description="One queensized bed", price=165.0,
-                         amenities=[tv50, tee_cooker, iron]),
-                    Room(number="12", type=double_room, max_guests=2, description="One queensized bed", price=165.0,
-                         amenities=[tv50, tee_cooker, iron]),
-                    Room(number="13", type=double_room, max_guests=2, description="One queensized bed", price=165.0,
-                         amenities=[tv50, tee_cooker, iron]),
-                    Room(number="14", type=double_room, max_guests=2, description="One kingsized bed", price=183.0,
-                         amenities=[tv50, tee_cooker, nespresso, iron]),
-                    Room(number="15", type=double_room, max_guests=2, description="One kingsized bed", price=183.0,
-                         amenities=[tv50, tee_cooker, nespresso, iron]),
+                    Room(number="01", type="single room", max_guests=1, description="One single bed",
+                         amenities="TV, Caffe Machine", price=124.0),
+                    Room(number="02", type="double room", max_guests=2, description="One double bed",
+                         amenities="TV, Caffe Machine", price=138.0),
+                    Room(number="03", type="single room", max_guests=1, description="One single bed",
+                         amenities="TV, Caffe Machine", price=124.0),
+                    Room(number="04", type="double room", max_guests=2, description="Two single beds",
+                         amenities="TV, Caffe Machine", price=138.0),
+                    Room(number="05", type="family room", max_guests=4,
+                         description="One queensized bed and two single beds",
+                         amenities="TV, Caffe Machine", price=219.0),
+                    Room(number="06", type="double room", max_guests=2, description="One double bed",
+                         amenities="TV, Caffe Machine", price=138.0),
+                    Room(number="07", type="double room", max_guests=2, description="One double bed",
+                         amenities="TV, Caffe Machine", price=138.0),
+                    Room(number="11", type="double room", max_guests=2, description="One queensized bed",
+                         amenities="TV, Caffe Machine", price=165.0),
+                    Room(number="12", type="double room", max_guests=2, description="One queensized bed",
+                         amenities="TV, Caffe Machine", price=165.0),
+                    Room(number="13", type="double room", max_guests=2, description="One queensized bed",
+                         amenities="TV, Caffe Machine", price=165.0),
+                    Room(number="14", type="double room", max_guests=2, description="One kingsized bed",
+                         amenities="TV, Caffe Machine", price=183.0),
+                    Room(number="15", type="double room", max_guests=2, description="One kingsized bed",
+                         amenities="TV, Caffe Machine", price=183.0),
                 ]
             ),
 
@@ -90,26 +78,26 @@ def generate_hotels(engine: Engine, verbose: bool = False) -> None:
                     city="Zürich"
                 ),
                 rooms=[
-                    Room(number="01", type=double_room, max_guests=2, description="Komfort Zimmer", price=139.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="02", type=double_room, max_guests=2, description="Komfort Zimmer", price=139.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="03", type=double_room, max_guests=2, description="Komfort Zimmer", price=139.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="04", type=double_room, max_guests=2, description="Komfort Zimmer", price=139.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="05", type=double_room, max_guests=3, description="Komfort Zimmer", price=139.0,
-                         amenities=[tv43, tee_cooker]),
-                    Room(number="06", type=double_room, max_guests=2, description="Superior Zimmer", price=141.0,
-                         amenities=[tv50, tee_cooker, iron]),
-                    Room(number="07", type=double_room, max_guests=2, description="Superior Zimmer", price=141.0,
-                         amenities=[tv50, tee_cooker, iron]),
-                    Room(number="11", type=double_room, max_guests=2, description="Superior Zimmer", price=141.0,
-                         amenities=[tv50, tee_cooker, iron]),
-                    Room(number="12", type=suite, max_guests=4, description="Suite", price=153.0,
-                         amenities=[tv50, tee_cooker, iron]),
-                    Room(number="13", type=suite, max_guests=4, description="Suite", price=153.0,
-                         amenities=[tv50, tee_cooker, iron]),
+                    Room(number="01", type="double room", max_guests=2, description="Komfort Zimmer",
+                         amenities="TV, Caffe Machine", price=139.0),
+                    Room(number="02", type="double room", max_guests=2, description="Komfort Zimmer",
+                         amenities="TV, Caffe Machine", price=139.0),
+                    Room(number="03", type="double room", max_guests=2, description="Komfort Zimmer",
+                         amenities="TV, Caffe Machine", price=139.0),
+                    Room(number="04", type="double room", max_guests=2, description="Komfort Zimmer",
+                         amenities="TV, Caffe Machine", price=139.0),
+                    Room(number="05", type="double room", max_guests=3, description="Komfort Zimmer",
+                         amenities="TV, Caffe Machine", price=139.0),
+                    Room(number="06", type="double room", max_guests=2, description="Superior Zimmer",
+                         amenities="TV, Caffe Machine", price=141.0),
+                    Room(number="07", type="double room", max_guests=2, description="Superior Zimmer",
+                         amenities="TV, Caffe Machine", price=141.0),
+                    Room(number="11", type="double room", max_guests=2, description="Superior Zimmer",
+                         amenities="TV, Caffe Machine", price=141.0),
+                    Room(number="12", type="suite", max_guests=4, description="Suite",
+                         amenities="TV, Caffe Machine", price=153.0),
+                    Room(number="13", type="suite", max_guests=4, description="Suite",
+                         amenities="TV, Caffe Machine", price=153.0),
                 ]
             )
         ]
@@ -125,8 +113,6 @@ def generate_hotels(engine: Engine, verbose: bool = False) -> None:
                 print(hotel)
                 for room in hotel.rooms:
                     print(f"{' ' * 5}{room}")
-                    for amenity in room.amenities:
-                        print(f"{' ' * 10}{amenity}")
 
 
 def generate_guests(engine: Engine, verbose):

@@ -180,5 +180,3 @@ if __name__ == "__main__":
     window = HotelUIForm()
     window.show()
     sys.exit(app.exec())
-
-

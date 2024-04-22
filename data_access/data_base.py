@@ -7,7 +7,7 @@ from sqlalchemy.schema import CreateTable
 from data_models.models import *
 from data_access.data_generator import *
 
-def init_db(file_path: str, create_ddl: bool = False, generate_examples: bool = False, verbose: bool = False):
+def init_db(file_path: str, create_ddl: bool = False, generate_example_data: bool = False, verbose: bool = False):
     path = Path(file_path)
     data_folder = path.parent
     engine = create_engine(f"sqlite:///{file_path}")
@@ -26,7 +26,7 @@ def init_db(file_path: str, create_ddl: bool = False, generate_examples: bool = 
                 create_table = str(CreateTable(table).compile(engine)).strip()
                 ddl_file.write(f"{create_table};{os.linesep}")
 
-    if generate_examples:
+    if generate_example_data:
         generate_system_data(engine, verbose=verbose)
         generate_hotels(engine, verbose=verbose)
         generate_guests(engine, verbose=verbose)
