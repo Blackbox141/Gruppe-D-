@@ -17,6 +17,7 @@ class SearchManager(object):
         self.__engine = create_engine(f'sqlite:///{database_file}', echo=False)
         self.__session = scoped_session(sessionmaker(bind=self.__engine))
 
+
     def get_all_hotels(self):
         query = select(Hotel)
         hotels = self.__session.execute(query).scalars().all()
