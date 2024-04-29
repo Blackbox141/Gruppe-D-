@@ -7,8 +7,8 @@ from data_models.models import *
 
 
 class HotelManager(object):
-    def __init__(self, session_maker):
-        self._session = scoped_session(session_maker)
+    def __init__(self, session):
+        self._session = session
 
     def show_all_hotels(self):
         hotels = self._session.query(Hotel).all()
