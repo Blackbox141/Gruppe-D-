@@ -9,21 +9,36 @@ from sqlalchemy import create_engine
 from sqlalchemy import select
 
 
-if __name__ = '__main__':
-    database_file = '../data_access/data_base.py'
+class SearchManager(object):
+    def __init__(self, database_file):
+        database_path = Path(database_file)
+        if not database_path.is_file():
+            init_db(database_file, generate_example_data=True)
+        self.__engine = create_engine(f'sqlite:///{database_file}', echo=False)
+        self.__session = scoped_session(sessionmaker(bind=self.__engine))
 
-    engine = create_engine(f'sqlite:///{database_file}', echo=False)
-    database_path = Path(database_file)
-    if not database_path.is_file():
-        init_db(database_file, generate_example_data=True)
+    def get_all_hotels(self):
+        query = select(Hotel)
+        hotels = self.__session.execute(query).scalars().all()
+        return hotels
 
-    session = scoped_session(sessionmaker(bind=engine))
+    def get_hotels_by_name(self, name):
+        query = select(Hotel).where(Hotel.name.like(f"%{name}%"))
+        hotels = self.__session.execute(query).scalars().all();
+        return hotels
 
-    query = select(Hotel)
-    hotels = session.execute(query).scalars.all()
+
+
+if __name__ == "__main__":
+    sm = SearchManager('../data/database.db')
+    hotels = sm.get_all_hotels()
     for hotel in hotels:
         print(hotel)
 
+    name = input("Enter hotel name: ")
+    hotels = sm.get_hotels_by_name(name)
+    for hotel in hotels:
+        print(hotel)
 '''
 class SearchManager:
 
