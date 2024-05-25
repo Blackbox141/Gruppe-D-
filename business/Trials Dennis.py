@@ -12,11 +12,16 @@ class HotelManager(BaseManager):
     def delete_hotel(self, hotel_id):
         hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
         if hotel:
-            for room in hotel.rooms:
-                self._session.delete(room)
-            self._session.delete(hotel)
-            self._session.commit()
-            print(f"'{hotel.name}' with ID {hotel_id} has been deleted. There are now {self._session.query(Hotel).count()} hotel(s) left in the database.")
+            print(f"Hotel Details:\nID: {hotel.id}\nName: {hotel.name}\nStars: {hotel.stars}\nAddress: {hotel.address.street}, {hotel.address.zip}, {hotel.address.city}")
+            confirmation = input("Are you sure you want to delete this hotel? (yes/no): ").strip().lower()
+            if confirmation == 'yes':
+                for room in hotel.rooms:
+                    self._session.delete(room)
+                self._session.delete(hotel)
+                self._session.commit()
+                print(f"'{hotel.name}' with ID {hotel_id} has been deleted. There are now {self._session.query(Hotel).count()} hotel(s) left in the database.")
+            else:
+                print("Deletion cancelled.")
         else:
             print(f"No hotel found with ID {hotel_id}.")
 
@@ -68,10 +73,10 @@ class HotelManager(BaseManager):
         choice = input("Enter your choice (1-4): ")
 
         if choice == '1':
-            print(f"Current Hotel Name: {hotel.hotel_name}")
+            print(f"Current Hotel Name: {hotel.name}")
             new_name = input("Enter the new name for the hotel: ")
             hotel.name = new_name
-            print(f"New Hotel Name: {hotel.hotel_name}")
+            print(f"New Hotel Name: {hotel.name}")
 
         elif choice == '2':
             new_stars = input("Enter the new star rating (1-5): ")
@@ -97,7 +102,6 @@ class HotelManager(BaseManager):
             if not room:
                 print("No room found with that number.")
                 return
-            # Assuming you want to let the user update the room type and price
             new_type = input("Enter the new room type: ")
             new_price = input("Enter the new price: ")
             try:
@@ -130,8 +134,6 @@ def validate_in_range(ask_input, error_msg, type, min, max):
         if user_input >= min and user_input <= max:
             return user_input
         else: print(error_msg)
-
-
 
 
 if __name__ == "__main__":
@@ -177,14 +179,11 @@ if __name__ == "__main__":
                 print("Invalid input. Please enter a valid integer for the Hotel ID.")
 
         elif user_choice == '3':
-            hotel_id = input("Enter the Hotel ID to update: ")
-            hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
-            if not hotel:
-                print("No hotel found with that ID.")
+            manager.update_hotel()
+
         elif user_choice == '4':
             print("Exiting the program.")
             break
+
         else:
             print("Invalid option selected. Please try again.")
-
-# Test dennisaas

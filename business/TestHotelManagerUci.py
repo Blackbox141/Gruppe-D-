@@ -13,10 +13,11 @@ class HotelManager(BaseManager):
         hotel = Hotel(
             name=hotel_name,
             stars=hotel_stars,
-            address=Address(street=street,
-                            zip=zip,
-                            city=city),
-            rooms=rooms
+            address=Address(
+                street=street,
+                zip=zip,
+                city=city),
+                rooms=rooms
         )
 
         self._session.add(hotel)
