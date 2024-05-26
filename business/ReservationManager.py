@@ -18,4 +18,5 @@ class ReservationManager(object):
         query = select(Room)
         result = self.__session.execute(query).scalars().all()
         return result
+#hello
 
