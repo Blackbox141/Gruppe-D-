@@ -13,7 +13,7 @@ class HotelManager(BaseManager):
         hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
         if hotel:
             print(f"Hotel Details:\nID: {hotel.id}\nName: {hotel.name}\nStars: {hotel.stars}\nAddress: {hotel.address.street}, {hotel.address.zip}, {hotel.address.city}")
-            confirmation = input("Are you sure you want to delete this hotel? (yes/no): ").strip().lower()
+            confirmation = self.validate_yes_no("Are you sure you want to delete this hotel? (yes/no): ")
             if confirmation == 'yes':
                 for room in hotel.rooms:
                     self._session.delete(room)
@@ -77,7 +77,8 @@ class HotelManager(BaseManager):
         if not hotel:
             print("No hotel found with that ID.")
             return
-
+        print(
+            f"Hotel Details:\nID: {hotel.id}\nName: {hotel.name}\nStars: {hotel.stars}\nAddress: {hotel.address.street}, {hotel.address.zip}, {hotel.address.city}")
         print("Which attribute would you like to update?")
         print("1. Hotel Name")
         print("2. Hotel Stars")
