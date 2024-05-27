@@ -60,23 +60,39 @@ def show(hotels):
 
 
 if __name__ == '__main__':
-    if not os.environ.get("DB_FILE"):
-        os.environ["DB_FILE"] = input("Enter relative Path to db file: ")
-        while not Path(os.environ.get("DB_FILE")).parent.is_dir():
-            os.environ["DB_FILE"] = input("Enter relative Path to db file: ")
+    # This is only for testing without Application
+
+    # You should set the variable in the run configuration
+    # Because we are executing this file in the folder ./business/
+    # we need to relatively navigate first one folder up and therefore,
+    # use ../data in the path instead of ./data
+    # if the environment variable is not set, set it to a default
+    if not os.environ.get('DB_FILE'):
+        os.environ['DB_FILE'] = '../data/test.db'
     search_manager = SearchManager()
     all_hotels = search_manager.get_hotels()
-    show(all_hotels)
-    all_hotels = search_manager.get_hotels()
-    input("Press Enter to continue...")
+    for hotel in all_hotels:
+        print(hotel)
 
-    city_in = input('City: ')
-    hotels_by_city = search_manager.get_hotels_by_city(city_in)
-    show(hotels_by_city)
-    input("Press Enter to continue...")
-
-    name_in = input('Name: ')
-    city_in = input('City: ')
-    found_hotels = search_manager.get_hotels(name_in, city_in)
-    show(found_hotels)
-    input("Press Enter to continue...")
+# if __name__ == '__main__':
+#     # DB_FILE = ("../data/hotel_reservation.db")
+#     if not os.environ.get("DB_FILE"):
+#         os.environ["DB_FILE"] = input("Enter relative Path to db file: ")
+#         while not Path(os.environ.get("DB_FILE")).parent.is_dir():
+#             os.environ["DB_FILE"] = input("Enter relative Path to db file: ")
+#     search_manager = SearchManager()
+#     all_hotels = search_manager.get_hotels()
+#     show(all_hotels)
+#     all_hotels = search_manager.get_hotels()
+#     input("Press Enter to continue...")
+#
+#     city_in = input('City: ')
+#     hotels_by_city = search_manager.get_hotels_by_city(city_in)
+#     show(hotels_by_city)
+#     input("Press Enter to continue...")
+#
+#     name_in = input('Name: ')
+#     city_in = input('City: ')
+#     found_hotels = search_manager.get_hotels(name_in, city_in)
+#     show(found_hotels)
+#     input("Press Enter to continue...")
