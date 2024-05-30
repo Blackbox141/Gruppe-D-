@@ -42,3 +42,5 @@ class UserManager(BaseManager):
             if self._current_user.role.access_level == sys.maxsize:
                 return True
         return False
+
+    #von Phillip
