@@ -1,3 +1,5 @@
+# ReservationManager.py
+
 from pathlib import Path
 import os
 from sqlalchemy import create_engine, select
@@ -87,14 +89,12 @@ class ReservationManager:
         print(f"Booking confirmation file will be created after you exit: {filename}")
 
     def get_bookings_by_user(self, user_id):
-        # Find the guest_id using the login_id from the RegisteredGuest table
         guest_id_query = (
             self.__session.query(RegisteredGuest.id)
             .filter(RegisteredGuest.login_id == user_id)
             .scalar_subquery()
         )
 
-        # Use the found guest_id to get the bookings
         booking_query = (
             self.__session.query(Booking)
             .options(joinedload(Booking.room).joinedload(Room.hotel))
@@ -110,3 +110,61 @@ class ReservationManager:
             print("No bookings found.")
         for booking in bookings:
             print(f"Booking ID: {booking.id}, Guest ID: {booking.guest_id}, Room: {booking.room.number}, Hotel ID: {booking.room.hotel_id}, Start Date: {booking.start_date}, End Date: {booking.end_date}")
+
+    def get_user_future_bookings(self, user_id):
+        guest_id_query = (
+            self.__session.query(RegisteredGuest.id)
+            .filter(RegisteredGuest.login_id == user_id)
+            .scalar_subquery()
+        )
+        today = date.today()
+        booking_query = (
+            self.__session.query(Booking)
+            .options(joinedload(Booking.room).joinedload(Room.hotel))
+            .filter(Booking.guest_id == guest_id_query)
+            .filter(Booking.start_date > today)
+        )
+
+        bookings = booking_query.all()
+        return bookings
+
+    def update_booking(self, booking_id, user_id, new_start_date, new_end_date):
+        booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
+        if not booking:
+            return False, "Booking not found."
+
+        # Check if the new dates overlap with any other bookings for the same room, excluding the current booking
+        overlapping_bookings = (
+            self.__session.query(Booking)
+            .filter(Booking.room_hotel_id == booking.room_hotel_id)
+            .filter(Booking.room_number == booking.room_number)
+            .filter(Booking.id != booking.id)
+            .filter(
+                (Booking.start_date <= new_end_date) &
+                (Booking.end_date >= new_start_date)
+            )
+            .all()
+        )
+
+        if overlapping_bookings:
+            return False, "The room is not available for the selected dates."
+
+        # Temporarily update the booking dates for confirmation
+        original_start_date = booking.start_date
+        original_end_date = booking.end_date
+        booking.start_date = new_start_date
+        booking.end_date = new_end_date
+        self.__session.flush()  # Use flush instead of commit for temporary update
+
+        return True, "Booking dates updated. Please confirm to save changes."
+
+    def confirm_update_booking(self, booking_id, new_start_date, new_end_date):
+        booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
+        if booking:
+            booking.start_date = new_start_date
+            booking.end_date = new_end_date
+            self.__session.commit()
+            return True, "Booking successfully updated."
+        else:
+            return False, "Booking not found."
+

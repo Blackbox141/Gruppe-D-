@@ -143,3 +143,8 @@ class UserManager(BaseManager):
             'username': guest.login.username,
             'password': guest.login.password
         }
+
+    def is_username_unique(self, username):
+        query = select(Login).where(Login.username == username)
+        result = self._session.execute(query).scalar_one_or_none()
+        return result is None
