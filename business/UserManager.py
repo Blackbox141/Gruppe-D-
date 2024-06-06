@@ -1,8 +1,11 @@
+# In UserManager.py
+
 from sqlalchemy.orm import joinedload
 from sqlalchemy import select
 from data_models.models import Login, RegisteredGuest, Guest, Booking, Room, Address
 from business.BaseManager import BaseManager
 import sys
+
 
 class UserManager(BaseManager):
     def __init__(self, db_file):
@@ -18,10 +21,7 @@ class UserManager(BaseManager):
         return result
 
     def has_more_attempts(self):
-        if self._attempts < 3:
-            return True
-        else:
-            return False
+        return self._attempts < 3
 
     def logout(self):
         self._current_user = None
@@ -49,27 +49,6 @@ class UserManager(BaseManager):
         self._session.add(guest)
         self._session.commit()
         return guest.id
-
-    def update_user(self, user_id, **kwargs):
-        user = self._session.query(RegisteredGuest).filter(RegisteredGuest.id == user_id).first()
-        if not user:
-            return False
-
-        if 'street' in kwargs or 'zip' in kwargs or 'city' in kwargs:
-            if not user.address:
-                user.address = Address()
-            user.address.street = kwargs.get('street', user.address.street)
-            user.address.zip = kwargs.get('zip', user.address.zip)
-            user.address.city = kwargs.get('city', user.address.city)
-
-        for attr, value in kwargs.items():
-            if hasattr(user, attr):
-                setattr(user, attr, value)
-            elif hasattr(user.login, attr):
-                setattr(user.login, attr, value)
-
-        self._session.commit()
-        return True
 
     def get_booking_history(self, user_id):
         guest_id_query = (
@@ -116,3 +95,51 @@ class UserManager(BaseManager):
         self._session.delete(booking)
         self._session.commit()
         return True
+
+    def update_user(self, user_id, **kwargs):
+        guest = self._session.query(RegisteredGuest).filter(RegisteredGuest.login_id == user_id).first()
+        login = guest.login if guest else None
+        address = guest.address if guest else None
+
+        if not guest or not login or not address:
+            return False
+
+        # Update login credentials
+        if 'username' in kwargs and kwargs['username']:
+            login.username = kwargs['username']
+        if 'password' in kwargs and kwargs['password']:
+            login.password = kwargs['password']
+
+        # Update personal information
+        if 'firstname' in kwargs and kwargs['firstname']:
+            guest.firstname = kwargs['firstname']
+        if 'lastname' in kwargs and kwargs['lastname']:
+            guest.lastname = kwargs['lastname']
+        if 'email' in kwargs and kwargs['email']:
+            guest.email = kwargs['email']
+
+        # Update address details
+        if 'street' in kwargs and kwargs['street']:
+            address.street = kwargs['street']
+        if 'zip' in kwargs and kwargs['zip']:
+            address.zip = kwargs['zip']
+        if 'city' in kwargs and kwargs['city']:
+            address.city = kwargs['city']
+
+        self._session.commit()
+        return True
+
+    def get_user_info(self, user_id):
+        guest = self._session.query(RegisteredGuest).filter(RegisteredGuest.login_id == user_id).first()
+        if not guest:
+            return None
+        return {
+            'firstname': guest.firstname,
+            'lastname': guest.lastname,
+            'email': guest.email,
+            'street': guest.address.street,
+            'zip': guest.address.zip,
+            'city': guest.address.city,
+            'username': guest.login.username,
+            'password': guest.login.password
+        }
