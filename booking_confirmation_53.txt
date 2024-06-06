@@ -1,8 +1,0 @@
-Booking ID: 53
-Guest ID: 29
-Room: 100
-Hotel ID: 2
-Start Date: 2024-09-09
-End Date: 2024-09-11
-Number of Guests: 2
-Total Price: 66.0
