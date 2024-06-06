@@ -168,3 +168,21 @@ class ReservationManager:
         else:
             return False, "Booking not found."
 
+    def rollback_update_booking(self, booking_id, original_start_date, original_end_date):
+        booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
+        if booking:
+            booking.start_date = original_start_date
+            booking.end_date = original_end_date
+            self.__session.commit()
+            return True, "Booking rolled back to original dates."
+        else:
+            return False, "Booking not found."
+
+    def delete_booking(self, booking_id):
+        booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
+        if booking:
+            self.__session.delete(booking)
+            self.__session.commit()
+            return True
+        else:
+            return False
