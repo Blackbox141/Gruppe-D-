@@ -80,8 +80,25 @@ def update_account_menu():
     print("9. Exit")
     return validate("Please select an option (1-9): ", "Invalid option!", int, 1, 9)
 
+def display_user_info(user_info):
+    print("\nCurrent User Info:")
+    print(f"First Name: {user_info['firstname']}")
+    print(f"Last Name: {user_info['lastname']}")
+    print(f"Email: {user_info['email']}")
+    print(f"Street: {user_info['street']}")
+    print(f"Zip: {user_info['zip']}")
+    print(f"City: {user_info['city']}")
+    print(f"Username: {user_info['username']}")
+    print(f"Password: {user_info['password']}")
+    print("-------------------------------------------------------")
+
 if __name__ == "__main__":
     db_path = os.path.join(os.path.dirname(__file__), "data/hotel_reservation.db")
+    if not os.path.exists(db_path):
+        print(f"Database file not found: {db_path}")
+    else:
+        print(f"Using database file: {db_path}")
+
     user_manager = UserManager(db_path)
     hotel_manager = HotelManager(db_path)
     search_manager = SearchManager(db_path)
@@ -283,46 +300,110 @@ if __name__ == "__main__":
                             print("No bookings found.")
 
 
+
                     elif user_choice == 3:  # Edit Account
+
+                        current_user_info = user_manager.get_user_info(user_manager.get_current_user().id)
+
+                        if current_user_info:
+
+                            display_user_info(current_user_info)
+
+                        else:
+
+                            print("Failed to retrieve current user info.")
+
                         while True:
+
                             update_account_choice = update_account_menu()
+
                             if update_account_choice == 1:
+
                                 firstname = input("Enter new first name: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, firstname=firstname)
+
+                                success = user_manager.update_user(user_manager.get_current_user().id,
+                                                                   firstname=firstname)
+
                                 print("First name updated." if success else "Failed to update first name.")
+
                             elif update_account_choice == 2:
+
                                 lastname = input("Enter new last name: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, lastname=lastname)
+
+                                success = user_manager.update_user(user_manager.get_current_user().id,
+                                                                   lastname=lastname)
+
                                 print("Last name updated." if success else "Failed to update last name.")
+
                             elif update_account_choice == 3:
+
                                 email = input("Enter new email: ")
+
                                 success = user_manager.update_user(user_manager.get_current_user().id, email=email)
+
                                 print("Email updated." if success else "Failed to update email.")
+
                             elif update_account_choice == 4:
+
                                 street = input("Enter new street: ")
+
                                 success = user_manager.update_user(user_manager.get_current_user().id, street=street)
+
                                 print("Street updated." if success else "Failed to update street.")
+
                             elif update_account_choice == 5:
+
                                 zip_code = input("Enter new zip code: ")
+
                                 success = user_manager.update_user(user_manager.get_current_user().id, zip=zip_code)
+
                                 print("Zip code updated." if success else "Failed to update zip code.")
+
                             elif update_account_choice == 6:
+
                                 city = input("Enter new city: ")
+
                                 success = user_manager.update_user(user_manager.get_current_user().id, city=city)
+
                                 print("City updated." if success else "Failed to update city.")
+
                             elif update_account_choice == 7:
+
                                 username = input("Enter new username: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, username=username)
+
+                                success = user_manager.update_user(user_manager.get_current_user().id,
+                                                                   username=username)
+
                                 print("Username updated." if success else "Failed to update username.")
+
                             elif update_account_choice == 8:
+
                                 password = input("Enter new password: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, password=password)
+
+                                success = user_manager.update_user(user_manager.get_current_user().id,
+                                                                   password=password)
+
                                 print("Password updated." if success else "Failed to update password.")
+
                             elif update_account_choice == 9:
+
                                 break
 
+                        updated_user_info = user_manager.get_user_info(user_manager.get_current_user().id)
+
+                        if updated_user_info:
+
+                            display_user_info(updated_user_info)
+
+                        else:
+
+                            print("Failed to retrieve updated user info.")
+
+
                     elif user_choice == 4:  # Logout
+
                         user_manager.logout()
+
                         break
 
         elif choice == 2:  # Register
@@ -390,48 +471,6 @@ if __name__ == "__main__":
                                 print(f"Booking ID: {booking.id}, Hotel: {booking.room.hotel.name}, Room Number: {booking.room.number}, Start Date: {booking.start_date}, End Date: {booking.end_date}, Total Price: {total_price}")
                         else:
                             print("No bookings found.")
-
-                    elif user_choice == 3:  # Edit Account
-                        while True:
-                            update_account_choice = update_account_menu()
-                            if update_account_choice == 1:
-                                firstname = input("Enter new first name: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, firstname=firstname)
-                                print("First name updated." if success else "Failed to update first name.")
-                            elif update_account_choice == 2:
-                                lastname = input("Enter new last name: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, lastname=lastname)
-                                print("Last name updated." if success else "Failed to update last name.")
-                            elif update_account_choice == 3:
-                                email = input("Enter new email: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, email=email)
-                                print("Email updated." if success else "Failed to update email.")
-                            elif update_account_choice == 4:
-                                street = input("Enter new street: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, street=street)
-                                print("Street updated." if success else "Failed to update street.")
-                            elif update_account_choice == 5:
-                                zip_code = input("Enter new zip code: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, zip=zip_code)
-                                print("Zip code updated." if success else "Failed to update zip code.")
-                            elif update_account_choice == 6:
-                                city = input("Enter new city: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, city=city)
-                                print("City updated." if success else "Failed to update city.")
-                            elif update_account_choice == 7:
-                                username = input("Enter new username: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, username=username)
-                                print("Username updated." if success else "Failed to update username.")
-                            elif update_account_choice == 8:
-                                password = input("Enter new password: ")
-                                success = user_manager.update_user(user_manager.get_current_user().id, password=password)
-                                print("Password updated." if success else "Failed to update password.")
-                            elif update_account_choice == 9:
-                                break
-
-                    elif user_choice == 4:  # Logout
-                        user_manager.logout()
-                        break
 
             except ValueError as e:
                 print(e)
