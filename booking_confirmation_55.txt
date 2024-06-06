@@ -1,0 +1,13 @@
+Booking Confirmation
+=====================
+
+Booking ID: 55
+Guest Name: 1 1
+Guest Email: 1
+Room: 04
+Hotel: Hotel Amaris
+Hotel Address: Tannwaldstrasse 34, 4600, Olten
+Start Date: 2024-09-09
+End Date: 2024-09-11
+Number of Guests: 2
+Total Price: 276.0
