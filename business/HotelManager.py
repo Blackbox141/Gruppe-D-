@@ -6,6 +6,7 @@ from business.BaseManager import BaseManager
 from data_models.models import Hotel, Address, Room
 from datetime import datetime
 
+
 class HotelManager(BaseManager):
 
     def delete_hotel(self, hotel_id):

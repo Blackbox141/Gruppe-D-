@@ -27,7 +27,7 @@ def validate(ask_input, error_msg, type_=str, min_val=None, max_val=None, date_f
 def show_hotels(hotels, search_manager, start_date=None, end_date=None, number_of_guests=None):
     for hotel in hotels:
         print(f"\n\n================== Hotel ID: {hotel.id} ==================")
-        print(f"\nName: {hotel.name}, Stars: {hotel.stars}, Address: {hotel.address.street}, {hotel.address.zip}, {hotel.address.city}")
+        print(f"\nName: {hotel.name}\nStars: {hotel.stars}\nAddress: {hotel.address.street}, {hotel.address.zip}, {hotel.address.city}")
         print("--------------------------------------------------------------")
         rooms = search_manager.get_available_rooms(hotel.id, start_date, end_date, number_of_guests) if start_date and end_date else hotel.rooms
         for room in rooms:
@@ -496,7 +496,7 @@ if __name__ == "__main__":
                     else:
                         show_hotels(filtered_hotels, search_manager, start_date, end_date, number_of_guests)
 
-                        hotel_id = validate("Enter hotel ID to book: ", "Invalid ID!", int)
+                        hotel_id = validate("\nEnter hotel ID to book: ", "Invalid ID!", int)
                         room_number = validate("Enter room number to book: ", "Invalid number!", str)
                         firstname = input("Enter your first name: ")
                         lastname = input("Enter your last name: ")
@@ -520,7 +520,6 @@ if __name__ == "__main__":
                         display_booking_info(booking, reservation_manager)
                         confirm_booking = validate("Confirm booking? (yes/no): ", "Invalid input!", str)
                         if confirm_booking.lower() == 'yes':
-                            print(f"\nBooking confirmed. Total price: {total_price}")
                             print(f"Booking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
                         else:
                             reservation_manager.delete_booking(booking.id)
