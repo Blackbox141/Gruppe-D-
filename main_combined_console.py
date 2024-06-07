@@ -54,7 +54,7 @@ def admin_menu():
 def user_menu():
     print("\nUser Options:")
     print("1. Search for Hotels")
-    print("2. Change Booking")
+    print("2. View all bookings")
     print("3. Edit Account")
     print("4. Logout")
     return validate("Please select an option (1-4): ", "Invalid option!", int, 1, 4)
@@ -159,101 +159,104 @@ if __name__ == "__main__":
                             if confirm_booking.lower() == 'yes':
                                 print(f"Booking confirmed. Total price: {total_price}")
                                 print("Vielen Dank für deine Buchung. Die Bestätigung erhalten Sie nach dem Schließen dieses Fensters.")
+                                print(f"Booking confirmation file will be created after you exit: booking_confirmation_{booking.id}.txt")
                             else:
                                 reservation_manager.delete_booking(booking.id)
                                 print("Booking was not confirmed and has been cancelled.")
-                                break
+                            break
                         else:
                             print("You need to be logged in to book a room.")
                             break
 
-            elif user_choice == 2:  # Update Booking
-                bookings = user_manager.get_booking_history(user_manager.get_current_user().id)
-                if bookings:
-                    print("Your bookings:")
-                    for booking in bookings:
-                        display_booking_info(booking)
-                    modify = validate("Do you want to modify any future booking? (yes/no): ", "Invalid input!", str)
-                    if modify.lower() == 'yes':
-                        future_bookings = reservation_manager.get_user_future_bookings(user_manager.get_current_user().id)
-                        if future_bookings:
-                            print("Your future bookings:")
-                            for booking in future_bookings:
-                                display_booking_info(booking)
-                            booking_id = validate("Enter the Booking ID to modify: ", "Invalid ID!", int)
-                            selected_booking = next((b for b in future_bookings if b.id == booking_id), None)
-                            if not selected_booking:
-                                print("Invalid Booking ID.")
-                                continue
+            elif user_choice == 2:  # View all bookings
+                while True:
+                    bookings = reservation_manager.get_bookings_by_user(user_manager.get_current_user().id)
+                    if bookings:
+                        print("Your bookings:")
+                        for booking in bookings:
+                            display_booking_info(booking)
+                        modify = validate("Do you want to modify any future booking? (yes/no): ", "Invalid input!", str)
+                        if modify.lower() == 'yes':
+                            future_bookings = reservation_manager.get_user_future_bookings(user_manager.get_current_user().id)
+                            if future_bookings:
+                                print("Your future bookings:")
+                                for booking in future_bookings:
+                                    display_booking_info(booking)
+                                booking_id = validate("Enter the Booking ID to modify: ", "Invalid ID!", int)
+                                selected_booking = next((b for b in future_bookings if b.id == booking_id), None)
+                                if not selected_booking:
+                                    print("Invalid Booking ID.")
+                                    continue
 
-                            while True:
-                                update_booking_choice = update_booking_menu()
-                                if update_booking_choice == 1:  # Update Start Date
-                                    new_start_date = validate("Enter new start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
-                                    if new_start_date > selected_booking.end_date:
-                                        new_start_date, selected_booking.end_date = selected_booking.end_date, new_start_date
-                                    success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, selected_booking.end_date)
-                                    if success:
-                                        display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
-                                        confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
-                                        if confirm.lower() == 'yes':
-                                            reservation_manager.confirm_update_booking(booking_id, new_start_date, selected_booking.end_date)
-                                            print("Booking successfully updated.")
-                                        else:
-                                            reservation_manager.rollback_update_booking(booking_id, selected_booking.start_date, selected_booking.end_date)
-                                            print("Changes were not made.")
-                                        break
-                                    else:
-                                        print(message)
-                                elif update_booking_choice == 2:  # Update End Date
-                                    new_end_date = validate("Enter new end date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
-                                    if new_end_date < selected_booking.start_date:
-                                        selected_booking.start_date, new_end_date = new_end_date, selected_booking.start_date
-                                    success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, selected_booking.start_date, new_end_date)
-                                    if success:
-                                        display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
-                                        confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
-                                        if confirm.lower() == 'yes':
-                                            reservation_manager.confirm_update_booking(booking_id, selected_booking.start_date, new_end_date)
-                                            print("Booking successfully updated.")
-                                        else:
-                                            reservation_manager.rollback_update_booking(booking_id, selected_booking.start_date, selected_booking.end_date)
-                                            print("Changes were not made.")
-                                        break
-                                    else:
-                                        print(message)
-                                elif update_booking_choice == 3:  # Update Both Dates
-                                    new_start_date, new_end_date = get_start_and_end_date()
-                                    success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, new_end_date)
-                                    if success:
-                                        display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
-                                        confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
-                                        if confirm.lower() == 'yes':
-                                            reservation_manager.confirm_update_booking(booking_id, new_start_date, new_end_date)
-                                            print("Booking successfully updated.")
-                                        else:
-                                            reservation_manager.rollback_update_booking(booking_id, selected_booking.start_date, selected_booking.end_date)
-                                            print("Changes were not made.")
-                                        break
-                                    else:
-                                        print(message)
-                                elif update_booking_choice == 4:  # Cancel Booking
-                                    confirm_cancel = validate("Are you sure you want to cancel this booking? (yes/no): ", "Invalid input!", str)
-                                    if confirm_cancel.lower() == 'yes':
-                                        success = reservation_manager.delete_booking(booking_id)
+                                while True:
+                                    update_booking_choice = update_booking_menu()
+                                    if update_booking_choice == 1:  # Update Start Date
+                                        new_start_date = validate("Enter new start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
+                                        if new_start_date > selected_booking.end_date:
+                                            new_start_date, selected_booking.end_date = selected_booking.end_date, new_start_date
+                                        success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, selected_booking.end_date)
                                         if success:
-                                            print("Booking successfully canceled.")
+                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
+                                            confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
+                                            if confirm.lower() == 'yes':
+                                                reservation_manager.confirm_update_booking(booking_id, new_start_date, selected_booking.end_date)
+                                                print("Booking successfully updated.")
+                                            else:
+                                                reservation_manager.rollback_update_booking(booking_id, selected_booking.start_date, selected_booking.end_date)
+                                                print("Changes were not made.")
+                                            break
                                         else:
-                                            print("Failed to cancel booking.")
-                                    break
-                                elif update_booking_choice == 5:
-                                    break
+                                            print(message)
+                                    elif update_booking_choice == 2:  # Update End Date
+                                        new_end_date = validate("Enter new end date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
+                                        if new_end_date < selected_booking.start_date:
+                                            selected_booking.start_date, new_end_date = new_end_date, selected_booking.start_date
+                                        success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, selected_booking.start_date, new_end_date)
+                                        if success:
+                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
+                                            confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
+                                            if confirm.lower() == 'yes':
+                                                reservation_manager.confirm_update_booking(booking_id, selected_booking.start_date, new_end_date)
+                                                print("Booking successfully updated.")
+                                            else:
+                                                reservation_manager.rollback_update_booking(booking_id, selected_booking.start_date, selected_booking.end_date)
+                                                print("Changes were not made.")
+                                            break
+                                        else:
+                                            print(message)
+                                    elif update_booking_choice == 3:  # Update Both Dates
+                                        new_start_date, new_end_date = get_start_and_end_date()
+                                        success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, new_end_date)
+                                        if success:
+                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
+                                            confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
+                                            if confirm.lower() == 'yes':
+                                                reservation_manager.confirm_update_booking(booking_id, new_start_date, new_end_date)
+                                                print("Booking successfully updated.")
+                                            else:
+                                                reservation_manager.rollback_update_booking(booking_id, selected_booking.start_date, selected_booking.end_date)
+                                                print("Changes were not made.")
+                                            break
+                                        else:
+                                            print(message)
+                                    elif update_booking_choice == 4:  # Cancel Booking
+                                        confirm_cancel = validate("Are you sure you want to cancel this booking? (yes/no): ", "Invalid input!", str)
+                                        if confirm_cancel.lower() == 'yes':
+                                            success = reservation_manager.delete_booking(booking_id)
+                                            if success:
+                                                print("Booking successfully canceled.")
+                                            else:
+                                                print("Failed to cancel booking.")
+                                        break
+                                    elif update_booking_choice == 5:
+                                        break
+                            else:
+                                print("No future bookings found.")
                         else:
-                            print("No future bookings found.")
+                            print("No modifications made.")
                     else:
-                        print("No modifications made.")
-                else:
-                    print("No bookings found.")
+                        print("No bookings found.")
+                    break
 
             elif user_choice == 3:  # Edit Account
                 current_user_info = user_manager.get_user_info(user_manager.get_current_user().id)
@@ -536,6 +539,7 @@ if __name__ == "__main__":
                     if confirm_booking.lower() == 'yes':
                         print(f"Booking confirmed. Total price: {total_price}")
                         print("Vielen Dank für deine Buchung. Die Bestätigung erhalten Sie nach dem Schließen dieses Fensters.")
+                        print(f"Booking confirmation file will be created after you exit: booking_confirmation_{booking.id}.txt")
                     else:
                         reservation_manager.delete_booking(booking.id)
                         print("Booking was not confirmed and has been cancelled.")

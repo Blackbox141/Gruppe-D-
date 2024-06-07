@@ -50,21 +50,6 @@ class UserManager(BaseManager):
         self._session.commit()
         return guest.id
 
-    def get_booking_history(self, user_id):
-        guest_id_query = (
-            self._session.query(RegisteredGuest.id)
-            .filter(RegisteredGuest.login_id == user_id)
-            .scalar_subquery()
-        )
-        booking_query = (
-            self._session.query(Booking)
-            .options(joinedload(Booking.room).joinedload(Room.hotel))
-            .filter(Booking.guest_id == guest_id_query)
-        )
-
-        bookings = booking_query.all()
-        return bookings
-
     def update_booking(self, booking_id, start_date, end_date, number_of_guests):
         booking = self._session.query(Booking).filter(Booking.id == booking_id).first()
         if not booking:
