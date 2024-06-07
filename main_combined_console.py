@@ -327,6 +327,7 @@ if __name__ == "__main__":
                 user = user_manager.login(username, password)
                 if user:
                     print("Login successful!")
+                    print(f"\nWelcome back, {username}!")
                     break
                 elif user_manager.has_more_attempts():
                     print(f"Login failed. You have {3 - user_manager._attempts} attempt(s) left. Please check your username and password.")
