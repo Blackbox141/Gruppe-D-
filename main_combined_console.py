@@ -1,12 +1,11 @@
 # main_combined_console.py
 
-from datetime import datetime, date
+from datetime import datetime
 from business.UserManager import UserManager
 from business.HotelManager import HotelManager
 from business.SearchManager import SearchManager
 from business.ReservationManager import ReservationManager
 import os
-from data_models.models import Room
 
 def validate(ask_input, error_msg, type_=str, min_val=None, max_val=None, date_format=None):
     while True:
@@ -68,7 +67,7 @@ def update_booking_menu():
     print("5. Exit")
     return validate("Please select an option (1-5): ", "Invalid option!", int, 1, 5)
 
-def display_booking_info(booking):
+def display_booking_info(booking, reservation_manager):
     total_price = reservation_manager.calculate_total_price(booking.room.price, booking.start_date, booking.end_date)
     print(f"Booking ID: {booking.id}, Hotel: {booking.room.hotel.name}, Room Number: {booking.room.number}, Start Date: {booking.start_date}, End Date: {booking.end_date}, Total Price: {total_price}")
 
@@ -107,6 +106,7 @@ def get_start_and_end_date():
         if end_date < start_date:
             start_date, end_date = end_date, start_date
         return start_date, end_date
+
 
 if __name__ == "__main__":
     db_path = os.path.join(os.path.dirname(__file__), "data/hotel_reservation.db")
@@ -154,7 +154,7 @@ if __name__ == "__main__":
                                 end_date,
                                 number_of_guests
                             )
-                            display_booking_info(booking)
+                            display_booking_info(booking, reservation_manager)
                             confirm_booking = validate("Confirm booking? (yes/no): ", "Invalid input!", str)
                             if confirm_booking.lower() == 'yes':
                                 print(f"Booking confirmed. Total price: {total_price}")
@@ -174,14 +174,14 @@ if __name__ == "__main__":
                     if bookings:
                         print("Your bookings:")
                         for booking in bookings:
-                            display_booking_info(booking)
+                            display_booking_info(booking, reservation_manager)
                         modify = validate("Do you want to modify any future booking? (yes/no): ", "Invalid input!", str)
                         if modify.lower() == 'yes':
                             future_bookings = reservation_manager.get_user_future_bookings(user_manager.get_current_user().id)
                             if future_bookings:
                                 print("Your future bookings:")
                                 for booking in future_bookings:
-                                    display_booking_info(booking)
+                                    display_booking_info(booking, reservation_manager)
                                 booking_id = validate("Enter the Booking ID to modify: ", "Invalid ID!", int)
                                 selected_booking = next((b for b in future_bookings if b.id == booking_id), None)
                                 if not selected_booking:
@@ -196,7 +196,7 @@ if __name__ == "__main__":
                                             new_start_date, selected_booking.end_date = selected_booking.end_date, new_start_date
                                         success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, selected_booking.end_date)
                                         if success:
-                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
+                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id), reservation_manager)
                                             confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
                                             if confirm.lower() == 'yes':
                                                 reservation_manager.confirm_update_booking(booking_id, new_start_date, selected_booking.end_date)
@@ -213,7 +213,7 @@ if __name__ == "__main__":
                                             selected_booking.start_date, new_end_date = new_end_date, selected_booking.start_date
                                         success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, selected_booking.start_date, new_end_date)
                                         if success:
-                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
+                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id), reservation_manager)
                                             confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
                                             if confirm.lower() == 'yes':
                                                 reservation_manager.confirm_update_booking(booking_id, selected_booking.start_date, new_end_date)
@@ -228,7 +228,7 @@ if __name__ == "__main__":
                                         new_start_date, new_end_date = get_start_and_end_date()
                                         success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, new_end_date)
                                         if success:
-                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id))
+                                            display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id), reservation_manager)
                                             confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
                                             if confirm.lower() == 'yes':
                                                 reservation_manager.confirm_update_booking(booking_id, new_start_date, new_end_date)
@@ -345,27 +345,7 @@ if __name__ == "__main__":
                         zip_code = input("Enter zip code: ")
                         city = input("Enter city: ")
 
-                        rooms = []
-                        while True:
-                            room_number = input("Enter room number: ")
-                            room_type = input("Enter room type: ")
-                            room_price = validate("Enter room price: ", "Invalid price!", float)
-                            room_description = input("Enter room description: ")
-                            room_amenities = input("Enter room amenities: ")
-                            room_max_guests = validate("Enter max guests: ", "Invalid number!", int)
-
-                            rooms.append(Room(
-                                number=room_number,
-                                type=room_type,
-                                price=room_price,
-                                description=room_description,
-                                amenities=room_amenities,
-                                max_guests=room_max_guests
-                            ))
-
-                            another = validate("Add another room? (yes/no): ", "Invalid input!", str)
-                            if another.lower() != 'yes':
-                                break
+                        rooms = hotel_manager.add_rooms_to_hotel()
 
                         hotel = hotel_manager.add_hotel(hotel_name, hotel_stars, street, zip_code, city, rooms)
                         print(f"Hotel '{hotel_name}' added with ID {hotel.id}")
@@ -441,16 +421,12 @@ if __name__ == "__main__":
                                     print("Failed to update room.")
 
                             elif update_choice == 5:  # Add Room to Hotel
-                                room_number = input("Enter room number: ")
-                                room_type = input("Enter room type: ")
-                                room_price = validate("Enter room price: ", "Invalid price!", float)
-                                room_description = input("Enter room description: ")
-                                room_amenities = input("Enter room amenities: ")
-                                room_max_guests = validate("Enter max guests: ", "Invalid number!", int)
-                                if hotel_manager.add_room_to_hotel(hotel_id, room_number, room_type, room_price, room_description, room_amenities, room_max_guests):
-                                    print("Room added successfully.")
-                                else:
-                                    print("Failed to add room.")
+                                rooms = hotel_manager.add_rooms_to_hotel(hotel_id)
+                                for room in rooms:
+                                    if hotel_manager.add_room_to_hotel(hotel_id, room.number, room.type, room.price, room.description, room.amenities, room.max_guests):
+                                        print(f"Room {room.number} added successfully.")
+                                    else:
+                                        print(f"Failed to add room {room.number}.")
 
                             elif update_choice == 6:
                                 break
@@ -535,12 +511,11 @@ if __name__ == "__main__":
                         end_date,
                         number_of_guests
                     )
-                    display_booking_info(booking)
+                    display_booking_info(booking, reservation_manager)
                     confirm_booking = validate("Confirm booking? (yes/no): ", "Invalid input!", str)
                     if confirm_booking.lower() == 'yes':
                         print(f"Booking confirmed. Total price: {total_price}")
-                        print("Vielen Dank für deine Buchung. Die Bestätigung erhalten Sie nach dem Schließen dieses Fensters.")
-                        print(f"Booking confirmation file will be created after you exit: booking_confirmation_{booking.id}.txt")
+                        print(f"Booking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt")
                     else:
                         reservation_manager.delete_booking(booking.id)
                         print("Booking was not confirmed and has been cancelled.")

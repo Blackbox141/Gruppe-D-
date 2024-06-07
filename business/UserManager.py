@@ -1,11 +1,10 @@
-# In UserManager.py
+# UserManager.py
 
 from sqlalchemy.orm import joinedload
 from sqlalchemy import select
 from data_models.models import Login, RegisteredGuest, Guest, Booking, Room, Address
 from business.BaseManager import BaseManager
 import sys
-
 
 class UserManager(BaseManager):
     def __init__(self, db_file):
@@ -49,37 +48,6 @@ class UserManager(BaseManager):
         self._session.add(guest)
         self._session.commit()
         return guest.id
-
-    def update_booking(self, booking_id, start_date, end_date, number_of_guests):
-        booking = self._session.query(Booking).filter(Booking.id == booking_id).first()
-        if not booking:
-            return False
-
-        # Check room availability excluding the current booking
-        available_rooms = self._session.query(Room).join(Booking).filter(
-            Booking.room_hotel_id == booking.room_hotel_id,
-            Booking.start_date <= end_date,
-            Booking.end_date >= start_date,
-            Booking.id != booking.id  # Exclude the current booking
-        ).all()
-
-        if booking.room_number in [room.number for room in available_rooms]:
-            return False
-
-        booking.start_date = start_date
-        booking.end_date = end_date
-        booking.number_of_guests = number_of_guests
-        self._session.commit()
-        return True
-
-    def delete_booking(self, booking_id):
-        booking = self._session.query(Booking).filter(Booking.id == booking_id).first()
-        if not booking:
-            return False
-
-        self._session.delete(booking)
-        self._session.commit()
-        return True
 
     def update_user(self, user_id, **kwargs):
         guest = self._session.query(RegisteredGuest).filter(RegisteredGuest.login_id == user_id).first()

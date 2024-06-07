@@ -4,7 +4,6 @@ from pathlib import Path
 import os
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
-from sqlalchemy.orm import aliased
 from data_models.models import Booking, Room, Guest, Address, RegisteredGuest, Hotel
 from datetime import datetime, date
 
