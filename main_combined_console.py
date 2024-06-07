@@ -150,7 +150,8 @@ def search_and_book_hotel(user_manager, reservation_manager, search_manager, is_
     display_booking_info(booking, reservation_manager)
     confirm_booking = HotelManager.validate("Confirm booking? (yes/no): ", "Invalid input!", str)
     if confirm_booking.lower() == 'yes':
-        print(f"\nBooking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
+        print(f"\nBooking confirmed. Total price: {total_price}")
+        print(f"Booking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
     else:
         reservation_manager.delete_booking(booking.id)
         print("\nBooking was not confirmed and has been cancelled.\n")
@@ -348,7 +349,8 @@ if __name__ == "__main__":
                         match admin_choice:
                             case 1:
                                 hotel_name = input("Enter hotel name: ")
-                                hotel_stars = HotelManager.validate("Enter hotel stars (1-5): ", "Invalid stars!", int, 1, 5)
+                                hotel_stars = HotelManager.validate("Enter hotel stars (1-5): ", "Invalid stars!", int,
+                                                                    1, 5)
                                 street = input("Enter street: ")
                                 zip_code = input("Enter zip code: ")
                                 city = input("Enter city: ")
@@ -432,10 +434,7 @@ if __name__ == "__main__":
                                         case 5:
                                             rooms = hotel_manager.add_rooms_to_hotel(hotel_id)
                                             for room in rooms:
-                                                if hotel_manager.add_room_to_hotel(hotel_id, room.number, room.type, room.price, room.description, room.amenities, room.max_guests):
-                                                    print(f"\nRoom {room.number} added successfully.\n")
-                                                else:
-                                                    print(f"\nFailed to add room {room.number}.\n")
+                                                print(f"\nRoom {room.number} added successfully.\n")
 
                                         case 6:
                                             break

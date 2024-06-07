@@ -109,17 +109,22 @@ class HotelManager(BaseManager):
                 price=room_price,
                 description=room_description,
                 amenities=room_amenities,
-                max_guests=room_max_guests,
-                hotel_id=hotel_id
+                max_guests=room_max_guests
             )
-            self._session.add(room)
+            if hotel_id:
+                room.hotel_id = hotel_id
             rooms.append(room)
 
             another = self.validate("Add another room? (yes/no): ", "Invalid input!", str)
             if another.lower() != 'yes':
                 break
 
-        self._session.commit()
+        if hotel_id:
+            hotel = self.get_hotel(hotel_id)
+            if hotel:
+                hotel.rooms.extend(rooms)
+                self._session.commit()
+
         return rooms
 
     def room_number_exists(self, hotel_id, room_number):
