@@ -7,33 +7,15 @@ from business.SearchManager import SearchManager
 from business.ReservationManager import ReservationManager
 import os
 
-def validate(ask_input, error_msg, type_=str, min_val=None, max_val=None, date_format=None):
-    while True:
-        user_input = input(ask_input)
-        try:
-            if date_format:
-                user_input = datetime.strptime(user_input, date_format).date()
-            else:
-                user_input = type_(user_input)
-            match user_input:
-                case _ if min_val is not None and user_input < min_val:
-                    raise ValueError
-                case _ if max_val is not None and user_input > max_val:
-                    raise ValueError
-            return user_input
-        except ValueError:
-            print(f"\n{error_msg}\n")
-
 def show_hotels(hotels, search_manager, start_date=None, end_date=None, number_of_guests=None):
     for hotel in hotels:
         print(f"\n\n================== Hotel ID: {hotel.id} ==================")
-        print(f"\nName: {hotel.name}\nStars: {hotel.stars}\nAddress: {hotel.address.street}, {hotel.address.zip}, {hotel.address.city}")
+        print(f"\nName: {hotel.name}, Stars: {hotel.stars}, Address: {hotel.address.street}, {hotel.address.zip}, {hotel.address.city}")
         print("--------------------------------------------------------------")
         rooms = search_manager.get_available_rooms(hotel.id, start_date, end_date, number_of_guests) if start_date and end_date else hotel.rooms
         for room in rooms:
             availability = "Available" if start_date and end_date else "Not checked"
             print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price}, Max Guests: {room.max_guests}")
-
 
 def main_menu():
     print("\n================== Main Menu ==================")
@@ -41,7 +23,7 @@ def main_menu():
     print("2. Register")
     print("3. Continue as guest")
     print("4. Exit")
-    return validate("Please select an option (1-4): ", "Invalid option!", int, 1, 4)
+    return HotelManager.validate("Please select an option (1-4): ", "Invalid option!", int, 1, 4)
 
 def admin_menu():
     print("\n================== Admin Menu ==================")
@@ -51,7 +33,7 @@ def admin_menu():
     print("4. List Hotels")
     print("5. Show All Bookings")
     print("6. Logout")
-    return validate("Please select an option (1-6): ", "Invalid option!", int, 1, 6)
+    return HotelManager.validate("Please select an option (1-6): ", "Invalid option!", int, 1, 6)
 
 def user_menu():
     print("\n================== User Menu ==================")
@@ -59,7 +41,7 @@ def user_menu():
     print("2. View all bookings")
     print("3. Edit Account")
     print("4. Logout")
-    return validate("Please select an option (1-4): ", "Invalid option!", int, 1, 4)
+    return HotelManager.validate("Please select an option (1-4): ", "Invalid option!", int, 1, 4)
 
 def update_booking_menu():
     print("\n================== Update Booking Menu ==================")
@@ -68,7 +50,7 @@ def update_booking_menu():
     print("3. Update Both Start and End Date")
     print("4. Cancel Booking")
     print("5. Exit")
-    return validate("Please select an option (1-5): ", "Invalid option!", int, 1, 5)
+    return HotelManager.validate("Please select an option (1-5): ", "Invalid option!", int, 1, 5)
 
 def display_booking_info(booking, reservation_manager):
     total_price = reservation_manager.calculate_total_price(booking.room.price, booking.start_date, booking.end_date)
@@ -97,18 +79,82 @@ def update_account_menu():
     print("7. Update Username")
     print("8. Update Password")
     print("9. Exit")
-    return validate("Please select an option (1-9): ", "Invalid option!", int, 1, 9)
+    return HotelManager.validate("Please select an option (1-9): ", "Invalid option!", int, 1, 9)
 
 def get_start_and_end_date():
     while True:
-        start_date = validate("Enter start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
-        end_date = validate("Enter end date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
+        start_date = HotelManager.validate("Enter start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
+        end_date = HotelManager.validate("Enter end date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
         if start_date <= datetime.now().date() or end_date <= datetime.now().date():
             print("\nStart date and end date must be in the future.\n")
             continue
         if end_date < start_date:
             start_date, end_date = end_date, start_date
         return start_date, end_date
+
+def search_and_book_hotel(user_manager, reservation_manager, search_manager, is_guest=False):
+    start_date, end_date = get_start_and_end_date()
+    number_of_guests = HotelManager.validate("Enter number of guests: ", "Invalid number!", int)
+
+    city = input("Enter city (optional): ")
+    stars = input("Enter hotel stars (optional): ")
+
+    hotels = search_manager.get_hotels(city=city if city else None, stars=int(stars) if stars else None)
+    filtered_hotels = []
+    for hotel in hotels:
+        available_rooms = search_manager.get_available_rooms(hotel.id, start_date, end_date, number_of_guests)
+        if available_rooms:
+            filtered_hotels.append(hotel)
+    if not filtered_hotels:
+        print("\nNo hotels found matching the criteria.\n")
+        return
+    show_hotels(filtered_hotels, search_manager, start_date, end_date, number_of_guests)
+
+    hotel_id = HotelManager.validate("Enter hotel ID to book: ", "Invalid ID!", int)
+    room_number = HotelManager.validate("Enter room number to book: ", "Invalid number!", str)
+
+    if is_guest:
+        firstname = input("Enter your first name: ")
+        lastname = input("Enter your last name: ")
+        email = input("Enter your email: ")
+        street = input("Enter your street: ")
+        zip_code = input("Enter your zip code: ")
+        city = input("Enter your city: ")
+        booking, total_price = reservation_manager.book_room_guest(
+            firstname,
+            lastname,
+            email,
+            street,
+            zip_code,
+            city,
+            room_number,
+            hotel_id,
+            start_date,
+            end_date,
+            number_of_guests
+        )
+    else:
+        current_user = user_manager.get_current_user()
+        if not current_user:
+            print("\nYou need to be logged in to book a room.\n")
+            return
+        booking, total_price = reservation_manager.book_room_registered(
+            current_user.id,
+            room_number,
+            hotel_id,
+            start_date,
+            end_date,
+            number_of_guests
+        )
+
+    display_booking_info(booking, reservation_manager)
+    confirm_booking = HotelManager.validate("Confirm booking? (yes/no): ", "Invalid input!", str)
+    if confirm_booking.lower() == 'yes':
+        print(f"\nBooking confirmed. Total price: {total_price}")
+        print(f"Booking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
+    else:
+        reservation_manager.delete_booking(booking.id)
+        print("\nBooking was not confirmed and has been cancelled.\n")
 
 if __name__ == "__main__":
     db_path = os.path.join(os.path.dirname(__file__), "data/hotel_reservation.db")
@@ -127,49 +173,7 @@ if __name__ == "__main__":
             user_choice = user_menu()
             match user_choice:
                 case 1:
-                    while True:
-                        start_date, end_date = get_start_and_end_date()
-                        number_of_guests = validate("Enter number of guests: ", "Invalid number!", int)
-
-                        city = input("Enter city (optional): ")
-                        stars = input("Enter hotel stars (optional): ")
-
-                        hotels = search_manager.get_hotels(city=city if city else None, stars=int(stars) if stars else None)
-                        filtered_hotels = []
-                        for hotel in hotels:
-                            available_rooms = search_manager.get_available_rooms(hotel.id, start_date, end_date, number_of_guests)
-                            if available_rooms:
-                                filtered_hotels.append(hotel)
-                        if not filtered_hotels:
-                            print("\nNo hotels found matching the criteria.\n")
-                        else:
-                            show_hotels(filtered_hotels, search_manager, start_date, end_date, number_of_guests)
-
-                            hotel_id = validate("\nEnter hotel ID to book: ", "Invalid ID!", int)
-                            room_number = validate("Enter room number to book: ", "Invalid number!", str)
-                            current_user = user_manager.get_current_user()
-                            if current_user:
-                                booking, total_price = reservation_manager.book_room_registered(
-                                    current_user.id,
-                                    room_number,
-                                    hotel_id,
-                                    start_date,
-                                    end_date,
-                                    number_of_guests
-                                )
-                                display_booking_info(booking, reservation_manager)
-                                confirm_booking = validate("Confirm booking? (yes/no): ", "Invalid input!", str)
-                                if confirm_booking.lower() == 'yes':
-
-                                    print(f"Booking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
-                                else:
-                                    reservation_manager.delete_booking(booking.id)
-                                    print("\nBooking was not confirmed and has been cancelled.\n")
-                                break
-                            else:
-                                print("\nYou need to be logged in to book a room.\n")
-                                break
-
+                    search_and_book_hotel(user_manager, reservation_manager, search_manager)
                 case 2:
                     while True:
                         bookings = reservation_manager.get_bookings_by_user(user_manager.get_current_user().id)
@@ -177,14 +181,14 @@ if __name__ == "__main__":
                             print("\n================== Your Bookings ==================")
                             for booking in bookings:
                                 display_booking_info(booking, reservation_manager)
-                            modify = validate("Do you want to modify any future booking? (yes/no): ", "Invalid input!", str)
+                            modify = HotelManager.validate("Do you want to modify any future booking? (yes/no): ", "Invalid input!", str)
                             if modify.lower() == 'yes':
                                 future_bookings = reservation_manager.get_user_future_bookings(user_manager.get_current_user().id)
                                 if future_bookings:
                                     print("\n================== Your Future Bookings ==================")
                                     for booking in future_bookings:
                                         display_booking_info(booking, reservation_manager)
-                                    booking_id = validate("Enter the Booking ID to modify: ", "Invalid ID!", int)
+                                    booking_id = HotelManager.validate("Enter the Booking ID to modify: ", "Invalid ID!", int)
                                     selected_booking = next((b for b in future_bookings if b.id == booking_id), None)
                                     if not selected_booking:
                                         print("\nInvalid Booking ID.\n")
@@ -194,13 +198,13 @@ if __name__ == "__main__":
                                         update_booking_choice = update_booking_menu()
                                         match update_booking_choice:
                                             case 1:
-                                                new_start_date = validate("Enter new start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
+                                                new_start_date = HotelManager.validate("Enter new start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
                                                 if new_start_date > selected_booking.end_date:
                                                     new_start_date, selected_booking.end_date = selected_booking.end_date, new_start_date
                                                 success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, selected_booking.end_date)
                                                 if success:
                                                     display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id), reservation_manager)
-                                                    confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
+                                                    confirm = HotelManager.validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
                                                     if confirm.lower() == 'yes':
                                                         reservation_manager.confirm_update_booking(booking_id, new_start_date, selected_booking.end_date)
                                                         print("\nBooking successfully updated.\n")
@@ -211,13 +215,13 @@ if __name__ == "__main__":
                                                 else:
                                                     print(f"\n{message}\n")
                                             case 2:
-                                                new_end_date = validate("Enter new end date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
+                                                new_end_date = HotelManager.validate("Enter new end date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
                                                 if new_end_date < selected_booking.start_date:
                                                     selected_booking.start_date, new_end_date = new_end_date, selected_booking.start_date
                                                 success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, selected_booking.start_date, new_end_date)
                                                 if success:
                                                     display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id), reservation_manager)
-                                                    confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
+                                                    confirm = HotelManager.validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
                                                     if confirm.lower() == 'yes':
                                                         reservation_manager.confirm_update_booking(booking_id, selected_booking.start_date, new_end_date)
                                                         print("\nBooking successfully updated.\n")
@@ -232,7 +236,7 @@ if __name__ == "__main__":
                                                 success, message = reservation_manager.update_booking(booking_id, user_manager.get_current_user().id, new_start_date, new_end_date)
                                                 if success:
                                                     display_booking_info(next(b for b in reservation_manager.get_user_future_bookings(user_manager.get_current_user().id) if b.id == booking_id), reservation_manager)
-                                                    confirm = validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
+                                                    confirm = HotelManager.validate("Confirm the changes? (yes/no): ", "Invalid input!", str)
                                                     if confirm.lower() == 'yes':
                                                         reservation_manager.confirm_update_booking(booking_id, new_start_date, new_end_date)
                                                         print("\nBooking successfully updated.\n")
@@ -243,7 +247,7 @@ if __name__ == "__main__":
                                                 else:
                                                     print(f"\n{message}\n")
                                             case 4:
-                                                confirm_cancel = validate("Are you sure you want to cancel this booking? (yes/no): ", "Invalid input!", str)
+                                                confirm_cancel = HotelManager.validate("Are you sure you want to cancel this booking? (yes/no): ", "Invalid input!", str)
                                                 if confirm_cancel.lower() == 'yes':
                                                     success = reservation_manager.delete_booking(booking_id)
                                                     if success:
@@ -345,7 +349,7 @@ if __name__ == "__main__":
                         match admin_choice:
                             case 1:
                                 hotel_name = input("Enter hotel name: ")
-                                hotel_stars = validate("Enter hotel stars (1-5): ", "Invalid stars!", int, 1, 5)
+                                hotel_stars = HotelManager.validate("Enter hotel stars (1-5): ", "Invalid stars!", int, 1, 5)
                                 street = input("Enter street: ")
                                 zip_code = input("Enter zip code: ")
                                 city = input("Enter city: ")
@@ -358,8 +362,8 @@ if __name__ == "__main__":
                             case 2:
                                 hotels = hotel_manager.list_hotels()
                                 show_hotels(hotels, search_manager)
-                                hotel_id = validate("Enter hotel ID to delete: ", "Invalid ID!", int)
-                                confirm = validate("Are you sure you want to delete this hotel? (yes/no): ", "Invalid input!", str)
+                                hotel_id = HotelManager.validate("Enter hotel ID to delete: ", "Invalid ID!", int)
+                                confirm = HotelManager.validate("Are you sure you want to delete this hotel? (yes/no): ", "Invalid input!", str)
                                 if confirm.lower() == 'yes':
                                     if hotel_manager.delete_hotel(hotel_id):
                                         print("\nHotel deleted successfully.\n")
@@ -369,7 +373,7 @@ if __name__ == "__main__":
                             case 3:
                                 hotels = hotel_manager.list_hotels()
                                 show_hotels(hotels, search_manager)
-                                hotel_id = validate("Enter hotel ID to update: ", "Invalid ID!", int)
+                                hotel_id = HotelManager.validate("Enter hotel ID to update: ", "Invalid ID!", int)
                                 hotel = hotel_manager.get_hotel(hotel_id)
                                 if not hotel:
                                     print("\nHotel not found.\n")
@@ -383,7 +387,7 @@ if __name__ == "__main__":
                                     print("4. Update Room")
                                     print("5. Add Room to Hotel")
                                     print("6. Exit")
-                                    return validate("Please select an option (1-6): ", "Invalid option!", int, 1, 6)
+                                    return HotelManager.validate("Please select an option (1-6): ", "Invalid option!", int, 1, 6)
 
                                 while True:
                                     update_choice = update_menu()
@@ -396,7 +400,7 @@ if __name__ == "__main__":
                                                 print("\nFailed to update hotel name.\n")
 
                                         case 2:
-                                            new_stars = validate("Enter new hotel stars (1-5): ", "Invalid stars!", int, 1, 5)
+                                            new_stars = HotelManager.validate("Enter new hotel stars (1-5): ", "Invalid stars!", int, 1, 5)
                                             if hotel_manager.update_hotel_stars(hotel_id, new_stars):
                                                 print("\nHotel stars updated successfully.\n")
                                             else:
@@ -417,10 +421,10 @@ if __name__ == "__main__":
                                                 print(f"\nRoom Number: {room.number}\nType: {room.type}\nPrice: {room.price}\nMax Guests: {room.max_guests}\nDescription: {room.description}\nAmenities: {room.amenities}\n")
                                             room_number = input("Enter room number to update: ")
                                             new_type = input("Enter new room type: ")
-                                            new_price = validate("Enter new room price: ", "Invalid price!", float)
+                                            new_price = HotelManager.validate("Enter new room price: ", "Invalid price!", float)
                                             new_description = input("Enter new room description: ")
                                             new_amenities = input("Enter new room amenities: ")
-                                            new_max_guests = validate("Enter new max guests: ", "Invalid number!", int)
+                                            new_max_guests = HotelManager.validate("Enter new max guests: ", "Invalid number!", int)
                                             if hotel_manager.update_room(hotel_id, room_number, new_type, new_price, new_description, new_amenities, new_max_guests):
                                                 print("\nRoom updated successfully.\n")
                                             else:
@@ -478,53 +482,7 @@ if __name__ == "__main__":
                     print(f"\n{e}\n")
 
             case 3:
-                while True:
-                    start_date, end_date = get_start_and_end_date()
-                    number_of_guests = validate("Enter number of guests: ", "Invalid number!", int)
-
-                    city = input("Enter city (optional): ")
-                    stars = input("Enter hotel stars (optional): ")
-
-                    hotels = search_manager.get_hotels(city=city if city else None, stars=int(stars) if stars else None)
-                    filtered_hotels = []
-                    for hotel in hotels:
-                        available_rooms = search_manager.get_available_rooms(hotel.id, start_date, end_date, number_of_guests)
-                        if available_rooms:
-                            filtered_hotels.append(hotel)
-                    if not filtered_hotels:
-                        print("\nNo hotels found matching the criteria.\n")
-                    else:
-                        show_hotels(filtered_hotels, search_manager, start_date, end_date, number_of_guests)
-
-                        hotel_id = validate("\nEnter hotel ID to book: ", "Invalid ID!", int)
-                        room_number = validate("Enter room number to book: ", "Invalid number!", str)
-                        firstname = input("Enter your first name: ")
-                        lastname = input("Enter your last name: ")
-                        email = input("Enter your email: ")
-                        street = input("Enter your street: ")
-                        zip_code = input("Enter your zip code: ")
-                        city = input("Enter your city: ")
-                        booking, total_price = reservation_manager.book_room_guest(
-                            firstname,
-                            lastname,
-                            email,
-                            street,
-                            zip_code,
-                            city,
-                            room_number,
-                            hotel_id,
-                            start_date,
-                            end_date,
-                            number_of_guests
-                        )
-                        display_booking_info(booking, reservation_manager)
-                        confirm_booking = validate("Confirm booking? (yes/no): ", "Invalid input!", str)
-                        if confirm_booking.lower() == 'yes':
-                            print(f"Booking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
-                        else:
-                            reservation_manager.delete_booking(booking.id)
-                            print("\nBooking was not confirmed and has been cancelled.\n")
-                        break
+                search_and_book_hotel(user_manager, reservation_manager, search_manager, is_guest=True)
 
             case 4:
                 break
