@@ -85,7 +85,7 @@ class ReservationManager:
             file.write(f"End Date: {booking.end_date}\n")
             file.write(f"Number of Guests: {booking.number_of_guests}\n")
             file.write(f"Total Price: {total_price}\n")
-        print(f"Booking confirmation file will be created after you exit: {filename}")
+
 
     def get_bookings_by_user(self, user_id):
         guest_id_query = (
