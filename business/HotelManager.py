@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import select
 from business.BaseManager import BaseManager
 from data_models.models import Hotel, Address, Room
-from datetime import datetime, date
+from datetime import datetime
 
 class HotelManager(BaseManager):
 
@@ -94,14 +94,14 @@ class HotelManager(BaseManager):
         while True:
             room_number = input("Enter room number: ")
             if hotel_id and self.room_number_exists(hotel_id, room_number):
-                print("Room number already exists in this hotel. Please enter a unique room number.")
+                print("\nRoom number already exists in this hotel. Please enter a unique room number.\n")
                 continue
 
             room_type = input("Enter room type: ")
-            room_price = self.validate_input("Enter room price: ", "Invalid price!", float)
+            room_price = validate("Enter room price: ", "Invalid price!", float)
             room_description = input("Enter room description: ")
             room_amenities = input("Enter room amenities: ")
-            room_max_guests = self.validate_input("Enter max guests: ", "Invalid number!", int)
+            room_max_guests = validate("Enter max guests: ", "Invalid number!", int)
 
             rooms.append(Room(
                 number=room_number,
@@ -112,7 +112,7 @@ class HotelManager(BaseManager):
                 max_guests=room_max_guests
             ))
 
-            another = self.validate_input("Add another room? (yes/no): ", "Invalid input!", str)
+            another = validate("Add another room? (yes/no): ", "Invalid input!", str)
             if another.lower() != 'yes':
                 break
 
@@ -121,24 +121,6 @@ class HotelManager(BaseManager):
     def room_number_exists(self, hotel_id, room_number):
         existing_room = self._session.query(Room).filter(Room.hotel_id == hotel_id, Room.number == room_number).first()
         return existing_room is not None
-
-    @staticmethod
-    def validate_input(ask_input, error_msg, type_=str, min_val=None, max_val=None, date_format=None):
-        while True:
-            user_input = input(ask_input)
-            try:
-                if date_format:
-                    user_input = datetime.strptime(user_input, date_format).date()
-                else:
-                    user_input = type_(user_input)
-                if min_val is not None and user_input < min_val:
-                    raise ValueError
-                if max_val is not None and user_input > max_val:
-                    raise ValueError
-                return user_input
-            except ValueError:
-                print(error_msg)
-
 
     def is_roomnumber_unique(self, username):
         query = select(Room).where(Room.id == roomid)
