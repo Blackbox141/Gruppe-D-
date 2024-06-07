@@ -433,10 +433,9 @@ if __name__ == "__main__":
                                         case 5:
                                             rooms = hotel_manager.add_rooms_to_hotel(hotel_id)
                                             for room in rooms:
-                                                if hotel_manager.add_room_to_hotel(hotel_id, room.number, room.type, room.price, room.description, room.amenities, room.max_guests):
-                                                    print(f"\nRoom {room.number} added successfully.\n")
-                                                else:
-                                                    print(f"\nFailed to add room {room.number}.\n")
+                                                print(f"\nRoom {room.number} added successfully.\n")
+
+
 
                                         case 6:
                                             break

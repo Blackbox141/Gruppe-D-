@@ -103,19 +103,23 @@ class HotelManager(BaseManager):
             room_amenities = input("Enter room amenities: ")
             room_max_guests = self.validate("Enter max guests: ", "Invalid number!", int)
 
-            rooms.append(Room(
+            room = Room(
                 number=room_number,
                 type=room_type,
                 price=room_price,
                 description=room_description,
                 amenities=room_amenities,
-                max_guests=room_max_guests
-            ))
+                max_guests=room_max_guests,
+                hotel_id=hotel_id
+            )
+            self._session.add(room)
+            rooms.append(room)
 
             another = self.validate("Add another room? (yes/no): ", "Invalid input!", str)
             if another.lower() != 'yes':
                 break
 
+        self._session.commit()
         return rooms
 
     def room_number_exists(self, hotel_id, room_number):
@@ -139,8 +143,3 @@ class HotelManager(BaseManager):
                 return user_input
             except ValueError:
                 print(f"\n{error_msg}\n")
-
-    def is_roomnumber_unique(self, username):
-        query = select(Room).where(Room.id == roomid)
-        result = self._session.execute(query).scalar_one_or_none()
-        return result is None
