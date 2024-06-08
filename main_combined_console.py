@@ -110,7 +110,7 @@ def search_and_book_hotel(user_manager, reservation_manager, search_manager, is_
         return
     show_hotels(filtered_hotels, search_manager, start_date, end_date, number_of_guests)
 
-    hotel_id = HotelManager.validate("Enter hotel ID to book: ", "Invalid ID!", int)
+    hotel_id = HotelManager.validate("\nEnter hotel ID to book: ", "Invalid ID!", int)
     room_number = HotelManager.validate("Enter room number to book: ", "Invalid number!", str)
 
     if is_guest:
@@ -150,8 +150,7 @@ def search_and_book_hotel(user_manager, reservation_manager, search_manager, is_
     display_booking_info(booking, reservation_manager)
     confirm_booking = HotelManager.validate("Confirm booking? (yes/no): ", "Invalid input!", str)
     if confirm_booking.lower() == 'yes':
-        print(f"\nBooking confirmed. Total price: {total_price}")
-        print(f"Booking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
+        print(f"\nBooking confirmed. Thanks for your booking!\nConfirmation file will be created after you exit: booking_confirmation_{booking.id}.txt\n")
     else:
         reservation_manager.delete_booking(booking.id)
         print("\nBooking was not confirmed and has been cancelled.\n")
@@ -363,7 +362,7 @@ if __name__ == "__main__":
                             case 2:
                                 hotels = hotel_manager.list_hotels()
                                 show_hotels(hotels, search_manager)
-                                hotel_id = HotelManager.validate("Enter hotel ID to delete: ", "Invalid ID!", int)
+                                hotel_id = HotelManager.validate("\nEnter hotel ID to delete: ", "Invalid ID!", int)
                                 confirm = HotelManager.validate("Are you sure you want to delete this hotel? (yes/no): ", "Invalid input!", str)
                                 if confirm.lower() == 'yes':
                                     if hotel_manager.delete_hotel(hotel_id):
@@ -374,7 +373,7 @@ if __name__ == "__main__":
                             case 3:
                                 hotels = hotel_manager.list_hotels()
                                 show_hotels(hotels, search_manager)
-                                hotel_id = HotelManager.validate("Enter hotel ID to update: ", "Invalid ID!", int)
+                                hotel_id = HotelManager.validate("\nEnter hotel ID to update: ", "Invalid ID!", int)
                                 hotel = hotel_manager.get_hotel(hotel_id)
                                 if not hotel:
                                     print("\nHotel not found.\n")
