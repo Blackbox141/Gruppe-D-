@@ -14,7 +14,6 @@ def show_hotels(hotels, search_manager, start_date=None, end_date=None, number_o
         print("--------------------------------------------------------------")
         rooms = search_manager.get_available_rooms(hotel.id, start_date, end_date, number_of_guests) if start_date and end_date else hotel.rooms
         for room in rooms:
-            availability = "Available" if start_date and end_date else "Not checked"
             print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price}, Max Guests: {room.max_guests}")
 
 def main_menu():
