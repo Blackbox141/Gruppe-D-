@@ -1,11 +1,11 @@
-# main_combined_console.py
-
 from datetime import datetime
+import os
+
 from business.UserManager import UserManager
 from business.HotelManager import HotelManager
 from business.SearchManager import SearchManager
 from business.ReservationManager import ReservationManager
-import os
+
 
 # Hauptmethode zur Anzeige von Hotels und deren verfügbaren Zimmern
 def show_hotels(hotels, search_manager, start_date=None, end_date=None, number_of_guests=None):
@@ -38,7 +38,7 @@ def admin_menu():
     print("6. Logout")
     return HotelManager.validate("Please select an option (1-6): ", "Invalid option!", int, 1, 6)
 
-# Menü für Benutzer
+# Menü für eingeloggten/registrierten Nutzer
 def user_menu():
     print("\n================== User Menu ==================")
     print("1. Search for Hotels")
@@ -89,7 +89,7 @@ def update_account_menu():
     print("9. Exit")
     return HotelManager.validate("Please select an option (1-9): ", "Invalid option!", int, 1, 9)
 
-# Eingabe von Start- und Enddatum
+# Eingabe von Start- und Enddatum sowie Validierung und automatische Anpassung, falls das eingegebene Enddatum kleiner als das Startdatum ist
 def get_start_and_end_date():
     while True:
         start_date = HotelManager.validate("Enter start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
@@ -385,7 +385,7 @@ if __name__ == "__main__":
                                 hotels = hotel_manager.list_hotels()
                                 show_hotels(hotels, search_manager)
                                 hotel_id = HotelManager.validate("\nEnter hotel ID to update: ", "Invalid ID!", int)
-                                hotel = hotel_manager.get_hotel(hotel_id)
+                                hotel = hotel_manager.get_hotel_by_id(hotel_id)
                                 if not hotel:
                                     print("\nHotel not found.\n")
                                     continue

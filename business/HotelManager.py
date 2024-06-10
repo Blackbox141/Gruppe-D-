@@ -1,8 +1,7 @@
-# HotelManager.py
+from datetime import datetime
 
 from business.BaseManager import BaseManager
 from data_models.models import Hotel, Address, Room
-from datetime import datetime
 
 # Verwaltung der Hotels einschliesslich Hinzufügen, Aktualisieren und Löschen
 class HotelManager(BaseManager):
@@ -27,7 +26,7 @@ class HotelManager(BaseManager):
         else:
             return False
 
-    # Hinzufügen eines Hotels
+    # Hinzufügen eines neuen Hotels
     def add_hotel(self, hotel_name, hotel_stars, street, zip, city, rooms):
         hotel = Hotel(
             name=hotel_name,
@@ -51,10 +50,6 @@ class HotelManager(BaseManager):
     def list_hotel_rooms(self, hotel_id):
         hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
         return hotel.rooms if hotel else None
-
-    # Return eines Hotels basierend auf der ID
-    def get_hotel(self, hotel_id):
-        return self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
 
     # Aktualisierung des Hotelnamens
     def update_hotel_name(self, hotel_id, new_name):
@@ -136,7 +131,7 @@ class HotelManager(BaseManager):
                 break
 
         if hotel_id:
-            hotel = self.get_hotel(hotel_id)
+            hotel = self.get_hotel_by_id(hotel_id)
             if hotel:
                 hotel.rooms.extend(rooms)
                 self._session.commit()
@@ -148,7 +143,7 @@ class HotelManager(BaseManager):
         existing_room = self._session.query(Room).filter(Room.hotel_id == hotel_id, Room.number == room_number).first()
         return existing_room is not None
 
-    # Validierung von Benutzereingaben
+    # Validierung von Benutzereingaben, um mögliche Fehlermeldungen abzufangen
     @staticmethod
     def validate(ask_input, error_msg, type_=str, min_val=None, max_val=None, date_format=None):
         while True:

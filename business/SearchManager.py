@@ -1,9 +1,8 @@
-# SearchManager.py
-
 from sqlalchemy import select, create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from data_models.models import Hotel, Room, Booking, Address
 from datetime import datetime, date
+
+from data_models.models import Hotel, Room, Booking, Address
 
 
 # Verwaltung der Hotelsuche einschliesslich Abruf von Hotels und Zimmern

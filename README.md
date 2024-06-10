@@ -1,233 +1,58 @@
-# README Pythonprojekt
-In diesem README zeigen wir zu erst, wo welche UserStories abgedeckt werden.
-Anschliessend befindet sich eine kurze Projektdokumentation. 
+# Projekt: Hotelreservierungssystem
 
-## UserStories
+Anna Heldstab, Chiara Mamie, Naara Rivera, Dennis Langer, Luca Lenherr
 
----
+### Überblick
 
-**User Story 1.1:**
+Blabla Erklärung Hotelreservationssystem...
 
-*Als Gastnutzer möchte ich die verfügbaren Hotels durchsuchen, damit ich dasjenige auswählen kann, welches meinen Wünschen entspricht.*
+### Funktionalitäten
 
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_hotels` in `SearchManager.py`
-- `get_available_rooms` in `SearchManager.py`
+Unser Hotelreservierungssystem deckt die vorgegebenen User Stories ab und besteht aus mehreren Managern, die spezifische Aufgaben erfüllen und vom main_combined_console.py verwendet werden:
 
----
+- **HotelManager**: Verwalten von Hotelinformationen und Zimmern
+- **UserManager**: Verwalten von Benutzerinformationen und Authentifizierung
+- **SearchManager**: Suchen von Hotels und Zimmern
+- **ReservationManager**: Verwalten von Buchungen
 
-**User Story 1.1.1:**
+### Anwendung des Codes:
 
-*Ich möchte alle Hotels in einer Stadt durchsuchen, damit ich das Hotel nach meinem bevorzugten Standort (Stadt) auswählen kann.*
+1. **Datenbank einrichten:**
+   Beim ersten Start wird die Datenbank automatisch generiert, falls sie nicht vorhanden ist.
 
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_hotels` in `SearchManager.py`
+2. **Starten des Systems:**
+   Das Hauptskript `main_combined_console.py` starten, um die Benutzeroberfläche der Konsole zu öffnen.
 
----
+3. **Navigation durch das System:**
+   - **Gastnutzer** können Hotels durchsuchen und Zimmer buchen.
+   - **Registrierte Nutzer** haben die gleichen Optionen wie Gastnutzer, können aber zusätzlich ihre Buchungshistorie einsehen, Buchungen verwalten sowie auch Accountinformationen ansehen und bearbeiten.
+   - **Admin-Nutzer** können Hotelinformationen pflegen (Hotel hinzufügen, bearbeiten und löschen) und alle Hotels sowie Buchungen einsehen.
 
-**User Story 1.1.2:**
+4. **Interaktive Eingaben:**
+   Das System fordert den Nutzer auf, Eingaben zu machen (mittels Zahlen für die Navigation im Menü), um verschiedene Aktionen durchzuführen (z.B. Hotel suchen, Zimmer buchen, etc.).
 
-*Ich möchte alle Hotels in einer Stadt nach der Anzahl der Sterne durchsuchen.*
+### Besonderheiten
+- Das eingegeben Datum wird auf Korrektheit geprüft.
+- Wenn zwei Daten eingegeben werden, wird sichergestellt, dass das Startdatum immer kleiner ist wie das Enddatum.
+- Accountinformationen können angepasst werden.
+- Räume können nachträglich zu Hotels hinzugefügt werden.
+- Die Anzahl der Loginversuche ist beschränkt (bei 3 Fehlversucher besteht nur noch die Option, sich neu zu Registrieren oder als Gast fortzufahren).
+- Buchungen können im Nachhinein angepasst werden (allerdings nur jene in der Zukunft).
+- Usernames und Zimmernummern (pro Hotel) werden auf Duplikate geprüft, damit diese Werte nicht doppelt auf der Datenbank existieren.
 
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_hotels` in `SearchManager.py`
 
----
+### Unser Vorhehen
 
-**User Story 1.1.3:**
+Zu Beginn unseres Projekts haben wir uns eine Projektumgebung auf Github eingerichtet, damit wir alle zusammen am gleichen Code arbeiten konnten. Dabei traten allerdings regelmässig Probleme mit der Verknüpfung von GitHub und PyCharm auf, die wir durch Anpassungen in den VCS-Einstellungen von PyCharm versuchten zu lösen. Nachdem die Umgebung endlich funktionierte, haben wir uns in PyCharm umgesehen und einen Überblick über die eigentliche Projektarbeit sowie in die vorgegebene Projektstruktur samt Manager und Konsolenfunktionen verschafft.
 
-*Ich möchte alle Hotels in einer Stadt durchsuchen, die Zimmer haben, die meiner Gästezahl entsprechen (nur 1 Zimmer pro Buchung), entweder mit oder ohne Anzahl der Sterne.*
+Anschliessend haben wir die User Stories analysiert und diese in einer Excel-Liste den jeweiligen Managern zugeordnet. Unsere Gruppe besteht aus fünf Mitgliedern, daher haben wir die Manager unter uns aufgeteilt, sodass jeder für einen Manager verantwortlich war. Während der Entwicklung halfen wir uns gegenseitig und nutzten auch ChatGPT für Unterstützung.
 
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_hotels` in `SearchManager.py`
+Nachdem die Grundfunktionen implementiert waren, versuchten wir, die einzelnen Manager in einer kombinierten Konsole zusammenzuführen. Zur besseren Orientierung erstellten wir ein Flussdiagramm, welches die Pfade unseres Menüs visuell darstellt und uns beim Umsetzten in Python eine grosse Hilfe war.
 
----
+Unseren Code haben wir regelmässig gemeinsam getestet und weitere Funktionen und Methoden hinzugefügt, um alle Anforderungen der User Stories zu erfüllen. In weiteren Tests und Korrekturen stellten wir sicher, dass das System einwandfrei funktionierte.
 
-**User Story 1.1.4:**
+### Zusammenarbeit als Gruppe
 
-*Ich möchte alle Hotels in einer Stadt durchsuchen, die während meines Aufenthaltes Zimmer für meine Gästezahl zur Verfügung haben, entweder mit oder ohne Anzahl der Sterne.*
+Wir haben uns mehrmals wöchentlich als Gruppe getroffen, vorzugsweise an der Fachhochschule oder bei jemandem von uns zuhause. Wenn wir uns nicht persönlich treffen konnten, erfolgte die Kommunikation online über  Microsoft Teams. Zusätzlich haben wir ein Kanban-Board erstellt, um alle Funktionalitäten und Aufgaben zu organisieren und zu verfolgen. Aufgrund der Schwierigkeiten mit dem Push und Pull vom GitHub-Repository haben wir hauptsächlich in gemeinsamen Sessions in PyCharm gearbeitet.
 
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_hotels` in `SearchManager.py`
 
----
-
-**User Story 1.1.5:**
-
-*Ich möchte die folgenden Informationen pro Hotel sehen: Name, Adresse, Anzahl der Sterne.*
-
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_hotels` in `SearchManager.py`
-
----
-
-**User Story 1.1.6:**
-
-*Ich möchte ein Hotel auswählen, um die Details zu sehen (z.B. verfügbare Zimmer).*
-
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_available_rooms` in `SearchManager.py`
-
----
-
-**User Story 1.2:**
-
-*Als Gastnutzer möchte ich Details zu verschiedenen Zimmertypen (EZ, DZ, Familienzimmer), die in einem Hotel verfügbar sind, sehen, einschliesslich der maximalen Anzahl von Gästen für dieses Zimmer, Beschreibung, Preis und Ausstattung.*
-
-**Abgedeckt durch:**
-- `show_hotels` in `main_combined_console.py`
-- `get_available_rooms` in `SearchManager.py`
-
----
-
-**User Story 1.2.2:**
-
-*Ich möchte nur die verfügbaren Zimmer sehen.*
-
-**Abgedeckt durch:**
-- `get_available_rooms` in `SearchManager.py`
-
----
-
-**User Story 1.3:**
-
-*Als Gastbenutzer möchte ich ein Zimmer in einem bestimmten Hotel buchen, um meinen Urlaub zu planen.*
-
-**Abgedeckt durch:**
-- `search_and_book_hotel` in `main_combined_console.py`
-- `book_room_registered` in `ReservationManager.py`
-- `book_room_guest` in `ReservationManager.py`
-
----
-
-**User Story 1.4:**
-
-*Als Gastnutzer möchte ich möglichst wenig Informationen über mich preisgeben, damit meine Daten privat bleiben.*
-
-**Abgedeckt durch:**
-- `book_room_guest` in `ReservationManager.py`
-
----
-
-**User Story 1.5:**
-
-*Als Gastnutzer möchte ich die Details meiner Reservierung in einer lesbaren Form erhalten (z.B. die Reservierung in einer dauerhaften Datei speichern), damit ich meine Buchung später überprüfen kann.*
-
-**Abgedeckt durch:**
-- `search_and_book_hotel` in `main_combined_console.py`
-- `create_booking_confirmation_file` in `ReservationManager.py`
-
----
-
-**User Story 1.6:**
-
-*Als Gastbenutzer möchte ich mich mit meiner E-Mail-Adresse und einer persönlichen Kennung (Passwort) registrieren können, um weitere Funktionalitäten nutzen zu können.*
-
-**Abgedeckt durch:**
-- `add_user` in `UserManager.py`
-
----
-
-**User Story 2:**
-
-*Als registrierter Nutzer möchte ich alle Funktionalitäten eines Gastnutzers nutzen können und zusätzlich auf meine Buchungshistorie zugreifen, um meine kommenden Reservierungen zu verwalten.*
-
-**Abgedeckt durch:**
-- `user_menu` in `main_combined_console.py`
-- `get_user_info` in `UserManager.py`
-- `get_bookings_by_user` in `ReservationManager.py`
-- `get_user_future_bookings` in `ReservationManager.py`
-
----
-
-**User Story 2.1:**
-
-*Als registrierter Benutzer möchte ich mich in mein Konto einloggen, um auf meine Buchungshistorie zuzugreifen.*
-
-**Abgedeckt durch:**
-- `login` in `UserManager.py`
-- `get_user_info` in `UserManager.py`
-
----
-
-**User Story 2.1.1:**
-
-*Die Anwendungsfälle für meine Buchungen sind "neu/erstellen", "ändern/aktualisieren", "stornieren/löschen".*
-
-**Abgedeckt durch:**
-- `update_booking` in `ReservationManager.py`
-- `confirm_update_booking` in `ReservationManager.py`
-- `rollback_update_booking` in `ReservationManager.py`
-- `delete_booking` in `ReservationManager.py`
-- `get_user_future_bookings` in `ReservationManager.py`
-
----
-
-**User Story 3.1:**
-
-*Als Admin-Nutzer des Buchungssystems möchte ich die Möglichkeit haben, Hotelinformationen zu pflegen, um aktuelle Informationen im System zu haben.*
-
-**Abgedeckt durch:**
-- `admin_menu` in `main_combined_console.py`
-- `add_hotel` in `HotelManager.py`
-- `delete_hotel` in `HotelManager.py`
-- `update_hotel_name` in `HotelManager.py`
-- `update_hotel_stars` in `HotelManager.py`
-- `update_hotel_address` in `HotelManager.py`
-
----
-
-**User Story 3.1.1:**
-
-*Ich möchte neue Hotels zum System hinzufügen.*
-
-**Abgedeckt durch:**
-- `add_hotel` in `HotelManager.py`
-
----
-
-**User Story 3.1.2:**
-
-*Ich möchte Hotels aus dem System entfernen.*
-
-**Abgedeckt durch:**
-- `delete_hotel` in `HotelManager.py`
-
----
-
-**User Story 3.1.3:**
-
-*Ich möchte die Informationen bestimmter Hotels aktualisieren, z.B. den Namen, die Sterne usw.*
-
-**Abgedeckt durch:**
-- `update_hotel_name` in `HotelManager.py`
-- `update_hotel_stars` in `HotelManager.py`
-- `update_hotel_address` in `HotelManager.py`
-
----
-
-**User Story 3.2:**
-
-*Als Admin-Nutzer des Buchungssystems möchte ich alle Buchungen aller Hotels sehen können, um eine Übersicht zu erhalten.*
-
-**Abgedeckt durch:**
-- `show_all_bookings` in `ReservationManager.py`
-
----
-
-**User Story 3.4:**
-
-*Ich möchte in der Lage sein, die Zimmerverfügbarkeit zu verwalten und die Preise in Echtzeit im Backend-System der Anwendung zu aktualisieren.*
-
-**Abgedeckt durch:**
-- `update_room` in `HotelManager.py`
-- `add_rooms_to_hotel` in `HotelManager.py`
-
----

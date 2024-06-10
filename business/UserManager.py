@@ -1,10 +1,9 @@
-# UserManager.py
-
-from sqlalchemy.orm import joinedload
 from sqlalchemy import select
+import sys
+
 from data_models.models import Login, RegisteredGuest, Guest, Booking, Room, Address
 from business.BaseManager import BaseManager
-import sys
+
 
 # Verwaltung der Benutzer einschliesslich Login, Logout und Benutzerinformationen
 class UserManager(BaseManager):
@@ -40,7 +39,7 @@ class UserManager(BaseManager):
     def is_current_user_admin(self):
         return self._current_user and self._current_user.role.access_level == sys.maxsize
 
-    # Hinzufügen eines neuen Benutzers
+    # Registrierung eines Benutzers
     def add_user(self, username, password, firstname, lastname, email, street, zip, city):
         address = Address(street=street, zip=zip, city=city)
         self._session.add(address)

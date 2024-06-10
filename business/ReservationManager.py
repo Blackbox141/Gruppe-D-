@@ -1,11 +1,10 @@
-# ReservationManager.py
-
 from pathlib import Path
-import os
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
-from data_models.models import Booking, Room, Guest, Address, RegisteredGuest, Hotel
 from datetime import datetime, date
+
+from data_models.models import Booking, Room, Guest, Address, RegisteredGuest, Hotel
+
 
 # Verwaltung der Zimmerbuchungen einschliesslich Buchung, Aktualisierung und Stornos
 class ReservationManager:
@@ -118,7 +117,7 @@ class ReservationManager:
         for booking in bookings:
             print(f"Booking ID: {booking.id}, Guest ID: {booking.guest_id}, Room: {booking.room.number}, Hotel ID: {booking.room.hotel_id}, Start Date: {booking.start_date}, End Date: {booking.end_date}")
 
-    # Rückgabe von anstehend Buchungen eines Benutzers
+    # Return von anstehender Buchungen eines Benutzers
     def get_user_future_bookings(self, user_id):
         guest_id_query = (
             self.__session.query(RegisteredGuest.id)
