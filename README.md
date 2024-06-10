@@ -2,11 +2,11 @@
 
 Anna Heldstab, Chiara Mamie, Naara Rivera, Dennis Langer, Luca Lenherr
 
-### Überblick
+## Überblick
 
 Blabla Erklärung Hotelreservationssystem...
 
-### Funktionalitäten
+## Funktionalitäten
 
 Unser Hotelreservierungssystem deckt die vorgegebenen User Stories ab und besteht aus mehreren Managern, die spezifische Aufgaben erfüllen und vom main_combined_console.py verwendet werden:
 
@@ -15,7 +15,7 @@ Unser Hotelreservierungssystem deckt die vorgegebenen User Stories ab und besteh
 - **SearchManager**: Suchen von Hotels und Zimmern
 - **ReservationManager**: Verwalten von Buchungen
 
-### Anwendung des Codes:
+## Anwendung des Codes:
 
 1. **Datenbank einrichten:**
    Beim ersten Start wird die Datenbank automatisch generiert, falls sie nicht vorhanden ist.
@@ -31,7 +31,7 @@ Unser Hotelreservierungssystem deckt die vorgegebenen User Stories ab und besteh
 4. **Interaktive Eingaben:**
    Das System fordert den Nutzer auf, Eingaben zu machen (mittels Zahlen für die Navigation im Menü), um verschiedene Aktionen durchzuführen (z.B. Hotel suchen, Zimmer buchen, etc.).
 
-### Besonderheiten
+## Besonderheiten
 - Das eingegeben Datum wird auf Korrektheit geprüft.
 - Wenn zwei Daten eingegeben werden, wird sichergestellt, dass das Startdatum immer kleiner ist wie das Enddatum.
 - Accountinformationen können angepasst werden.
@@ -41,7 +41,7 @@ Unser Hotelreservierungssystem deckt die vorgegebenen User Stories ab und besteh
 - Usernames und Zimmernummern (pro Hotel) werden auf Duplikate geprüft, damit diese Werte nicht doppelt auf der Datenbank existieren.
 
 
-### Unser Vorhehen
+## Unser Vorhehen
 
 Zu Beginn unseres Projekts haben wir uns eine Projektumgebung auf Github eingerichtet, damit wir alle zusammen am gleichen Code arbeiten konnten. Dabei traten allerdings regelmässig Probleme mit der Verknüpfung von GitHub und PyCharm auf, die wir durch Anpassungen in den VCS-Einstellungen von PyCharm versuchten zu lösen. Nachdem die Umgebung endlich funktionierte, haben wir uns in PyCharm umgesehen und einen Überblick über die eigentliche Projektarbeit sowie in die vorgegebene Projektstruktur samt Manager und Konsolenfunktionen verschafft.
 
@@ -51,7 +51,7 @@ Nachdem die Grundfunktionen implementiert waren, versuchten wir, die einzelnen M
 
 Unseren Code haben wir regelmässig gemeinsam getestet und weitere Funktionen und Methoden hinzugefügt, um alle Anforderungen der User Stories zu erfüllen. In weiteren Tests und Korrekturen stellten wir sicher, dass das System einwandfrei funktionierte.
 
-### Zusammenarbeit als Gruppe
+## Zusammenarbeit als Gruppe
 
 Wir haben uns mehrmals wöchentlich als Gruppe getroffen, vorzugsweise an der Fachhochschule oder bei jemandem von uns zuhause. Wenn wir uns nicht persönlich treffen konnten, erfolgte die Kommunikation online über  Microsoft Teams. Zusätzlich haben wir ein Kanban-Board erstellt, um alle Funktionalitäten und Aufgaben zu organisieren und zu verfolgen. Aufgrund der Schwierigkeiten mit dem Push und Pull vom GitHub-Repository haben wir hauptsächlich in gemeinsamen Sessions in PyCharm gearbeitet.
 
