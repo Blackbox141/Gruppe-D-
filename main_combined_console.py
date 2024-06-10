@@ -7,6 +7,7 @@ from business.SearchManager import SearchManager
 from business.ReservationManager import ReservationManager
 import os
 
+# Hauptmethode zur Anzeige von Hotels und deren verfügbaren Zimmern
 def show_hotels(hotels, search_manager, start_date=None, end_date=None, number_of_guests=None):
     for hotel in hotels:
         print(f"\n\n================== Hotel ID: {hotel.id} ==================")
@@ -14,8 +15,10 @@ def show_hotels(hotels, search_manager, start_date=None, end_date=None, number_o
         print("--------------------------------------------------------------")
         rooms = search_manager.get_available_rooms(hotel.id, start_date, end_date, number_of_guests) if start_date and end_date else hotel.rooms
         for room in rooms:
+            availability = "Available" if start_date and end_date else "Not checked"
             print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price}, Max Guests: {room.max_guests}")
 
+# Hauptmenü des Programms
 def main_menu():
     print("\n================== Main Menu ==================")
     print("1. Login")
@@ -24,6 +27,7 @@ def main_menu():
     print("4. Exit")
     return HotelManager.validate("Please select an option (1-4): ", "Invalid option!", int, 1, 4)
 
+# Menü für Administrator
 def admin_menu():
     print("\n================== Admin Menu ==================")
     print("1. Add Hotel")
@@ -34,6 +38,7 @@ def admin_menu():
     print("6. Logout")
     return HotelManager.validate("Please select an option (1-6): ", "Invalid option!", int, 1, 6)
 
+# Menü für Benutzer
 def user_menu():
     print("\n================== User Menu ==================")
     print("1. Search for Hotels")
@@ -42,6 +47,7 @@ def user_menu():
     print("4. Logout")
     return HotelManager.validate("Please select an option (1-4): ", "Invalid option!", int, 1, 4)
 
+# Menü zur Aktualisierung von Buchungen
 def update_booking_menu():
     print("\n================== Update Booking Menu ==================")
     print("1. Update Start Date")
@@ -51,10 +57,12 @@ def update_booking_menu():
     print("5. Exit")
     return HotelManager.validate("Please select an option (1-5): ", "Invalid option!", int, 1, 5)
 
+# Anzeige von Buchungsinformationen
 def display_booking_info(booking, reservation_manager):
     total_price = reservation_manager.calculate_total_price(booking.room.price, booking.start_date, booking.end_date)
     print(f"\nBooking ID: {booking.id}\nHotel: {booking.room.hotel.name}\nRoom Number: {booking.room.number}\nStart Date: {booking.start_date}\nEnd Date: {booking.end_date}\nTotal Price: {total_price}\n")
 
+# Auflistung von gespeicherten Accountinformationen
 def display_user_info(user_info):
     print("\n================== Current User Info ==================")
     print(f"First Name: {user_info['firstname']}")
@@ -67,6 +75,7 @@ def display_user_info(user_info):
     print(f"Password: {user_info['password']}")
     print("-------------------------------------------------------")
 
+# Menü zur Aktualisierung des Benutzerkontos
 def update_account_menu():
     print("\n================== Update Account Menu ==================")
     print("1. Update First Name")
@@ -80,6 +89,7 @@ def update_account_menu():
     print("9. Exit")
     return HotelManager.validate("Please select an option (1-9): ", "Invalid option!", int, 1, 9)
 
+# Eingabe von Start- und Enddatum
 def get_start_and_end_date():
     while True:
         start_date = HotelManager.validate("Enter start date (YYYY-MM-DD): ", "Invalid date!", str, date_format='%Y-%m-%d')
@@ -91,6 +101,7 @@ def get_start_and_end_date():
             start_date, end_date = end_date, start_date
         return start_date, end_date
 
+# Suche und Buchung eines Hotels
 def search_and_book_hotel(user_manager, reservation_manager, search_manager, is_guest=False):
     start_date, end_date = get_start_and_end_date()
     number_of_guests = HotelManager.validate("Enter number of guests: ", "Invalid number!", int)
@@ -166,6 +177,7 @@ if __name__ == "__main__":
     search_manager = SearchManager(db_path)
     reservation_manager = ReservationManager(db_path)
 
+    # Loop des Menüs für Benutzer
     def user_menu_loop():
         while True:
             user_choice = user_menu()

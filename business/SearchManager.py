@@ -5,11 +5,16 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from data_models.models import Hotel, Room, Booking, Address
 from datetime import datetime, date
 
+
+# Verwaltung der Hotelsuche einschliesslich Abruf von Hotels und Zimmern
 class SearchManager:
+
+    # Konstruktor des SearchManagers
     def __init__(self, db_path):
         self.__engine = create_engine(f'sqlite:///{db_path}', echo=False)
         self.__session = scoped_session(sessionmaker(bind=self.__engine))
 
+    # Rückgabe von Hotels basierend auf Suchkriterien
     def get_hotels(self, name=None, city=None, stars=None):
         query = select(Hotel)
         if name:
@@ -20,6 +25,7 @@ class SearchManager:
             query = query.where(Hotel.stars == stars)
         return self.__session.execute(query).scalars().all()
 
+    # Rückgabe aller Zimmer eines Hotels
     def get_all_rooms(self, hotel_id, start_date=None, end_date=None, number_of_guests=None):
         query = select(Room).where(Room.hotel_id == hotel_id)
         rooms = self.__session.execute(query).scalars().all()
@@ -34,6 +40,7 @@ class SearchManager:
                 available_rooms.append(room)
         return available_rooms
 
+    # Rückgabe verfügbarer Zimmer eines Hotels
     def get_available_rooms(self, hotel_id, start_date, end_date, number_of_guests=None, exclude_booking_id=None):
         start_date = start_date if isinstance(start_date, date) else datetime.strptime(start_date, '%Y-%m-%d').date()
         end_date = end_date if isinstance(end_date, date) else datetime.strptime(end_date, '%Y-%m-%d').date()
@@ -50,6 +57,7 @@ class SearchManager:
             query = query.where(Room.max_guests >= number_of_guests)
         return self.__session.execute(query).scalars().all()
 
+    # Rückgabe gebuchter Zimmer eines Hotels
     def get_booked_rooms(self, hotel_id, start_date, end_date):
         start_date = start_date if isinstance(start_date, date) else datetime.strptime(start_date, '%Y-%m-%d').date()
         end_date = end_date if isinstance(end_date, date) else datetime.strptime(end_date, '%Y-%m-%d').date()

@@ -1,15 +1,23 @@
 # HotelManager.py
 
-from sqlalchemy.orm import joinedload
-from sqlalchemy import select
 from business.BaseManager import BaseManager
 from data_models.models import Hotel, Address, Room
-from datetime import datetime, date
+from datetime import datetime
 
+# Verwaltung der Hotels einschliesslich Hinzufügen, Aktualisieren und Löschen
 class HotelManager(BaseManager):
 
+    # Return eines Hotels basierend auf der ID
+    def get_hotel_by_id(self, hotel_id):
+        return self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
+
+    # Return eines Zimmers basierend auf der Hotel-ID und der Zimmernummer
+    def get_room_by_hotel_and_number(self, hotel_id, room_number):
+        return self._session.query(Room).filter(Room.hotel_id == hotel_id, Room.number == room_number).first()
+
+    # Löschen eines Hotels
     def delete_hotel(self, hotel_id):
-        hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
+        hotel = self.get_hotel_by_id(hotel_id)
         if hotel:
             for room in hotel.rooms:
                 self._session.delete(room)
@@ -19,6 +27,7 @@ class HotelManager(BaseManager):
         else:
             return False
 
+    # Hinzufügen eines Hotels
     def add_hotel(self, hotel_name, hotel_stars, street, zip, city, rooms):
         hotel = Hotel(
             name=hotel_name,
@@ -34,18 +43,22 @@ class HotelManager(BaseManager):
         self._session.commit()
         return hotel
 
+    # Return aller Hotels
     def list_hotels(self):
         return self._session.query(Hotel).all()
 
+    # Return aller Zimmer eines Hotels
     def list_hotel_rooms(self, hotel_id):
         hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
         return hotel.rooms if hotel else None
 
+    # Return eines Hotels basierend auf der ID
     def get_hotel(self, hotel_id):
         return self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
 
+    # Aktualisierung des Hotelnamens
     def update_hotel_name(self, hotel_id, new_name):
-        hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
+        hotel = self.get_hotel_by_id(hotel_id)
         if hotel:
             hotel.name = new_name
             self._session.commit()
@@ -53,8 +66,9 @@ class HotelManager(BaseManager):
         else:
             return False
 
+    # Aktualisierung der Hotelsterne
     def update_hotel_stars(self, hotel_id, new_stars):
-        hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
+        hotel = self.get_hotel_by_id(hotel_id)
         if hotel:
             hotel.stars = new_stars
             self._session.commit()
@@ -62,8 +76,10 @@ class HotelManager(BaseManager):
         else:
             return False
 
+
+    # Aktualisierung der Hoteladresse
     def update_hotel_address(self, hotel_id, new_street, new_zip, new_city):
-        hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
+        hotel = self.get_hotel_by_id(hotel_id)
         if hotel:
             if not hotel.address:
                 hotel.address = Address()
@@ -75,20 +91,20 @@ class HotelManager(BaseManager):
         else:
             return False
 
+    # Aktualisierung eines Zimmers
     def update_room(self, hotel_id, room_number, new_type, new_price, new_description, new_amenities, new_max_guests):
-        hotel = self._session.query(Hotel).filter(Hotel.id == hotel_id).first()
-        if hotel:
-            room = next((r for r in hotel.rooms if str(r.number) == room_number), None)
-            if room:
-                room.type = new_type
-                room.price = new_price
-                room.description = new_description
-                room.amenities = new_amenities
-                room.max_guests = new_max_guests
-                self._session.commit()
-                return True
+        room = self.get_room_by_hotel_and_number(hotel_id, room_number)
+        if room:
+            room.type = new_type
+            room.price = new_price
+            room.description = new_description
+            room.amenities = new_amenities
+            room.max_guests = new_max_guests
+            self._session.commit()
+            return True
         return False
 
+    # Hinzufügen von Zimmer zu einem Hotel
     def add_rooms_to_hotel(self, hotel_id=None):
         rooms = []
         while True:
@@ -127,10 +143,12 @@ class HotelManager(BaseManager):
 
         return rooms
 
+    # Überprüfung, ob eine Zimmernummer bereits existiert
     def room_number_exists(self, hotel_id, room_number):
         existing_room = self._session.query(Room).filter(Room.hotel_id == hotel_id, Room.number == room_number).first()
         return existing_room is not None
 
+    # Validierung von Benutzereingaben
     @staticmethod
     def validate(ask_input, error_msg, type_=str, min_val=None, max_val=None, date_format=None):
         while True:

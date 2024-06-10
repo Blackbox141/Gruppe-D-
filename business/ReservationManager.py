@@ -7,11 +7,15 @@ from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
 from data_models.models import Booking, Room, Guest, Address, RegisteredGuest, Hotel
 from datetime import datetime, date
 
+# Verwaltung der Zimmerbuchungen einschliesslich Buchung, Aktualisierung und Stornos
 class ReservationManager:
+
+    # Konstruktor des ReservationManagers
     def __init__(self, db_path: Path):
         self.__engine = create_engine(f'sqlite:///{db_path}', echo=False)
         self.__session = scoped_session(sessionmaker(bind=self.__engine))
 
+    # Buchung eines Zimmers für registrierte Benutzer
     def book_room_registered(self, user_id: int, room_number: str, hotel_id: int, start_date, end_date, number_of_guests: int):
         room = self.__session.query(Room).filter(Room.hotel_id == hotel_id, Room.number == room_number).first()
         if not room:
@@ -36,6 +40,7 @@ class ReservationManager:
         self.create_booking_confirmation_file(booking, guest, room, total_price)
         return booking, total_price
 
+    # Buchung eines Zimmers für Gäste
     def book_room_guest(self, firstname: str, lastname: str, email: str, street: str, zip_code: str, city: str, room_number: str, hotel_id: int, start_date, end_date, number_of_guests: int):
         address = Address(street=street, zip=zip_code, city=city)
         guest = Guest(firstname=firstname, lastname=lastname, email=email, address=address)
@@ -63,12 +68,14 @@ class ReservationManager:
         self.create_booking_confirmation_file(booking, guest, room, total_price)
         return booking, total_price
 
+    # Berechnung des Gesamtpreises einer Buchung
     def calculate_total_price(self, room_price, start_date, end_date):
         start_date = start_date if isinstance(start_date, (datetime, date)) else datetime.strptime(start_date, '%Y-%m-%d').date()
         end_date = end_date if isinstance(end_date, (datetime, date)) else datetime.strptime(end_date, '%Y-%m-%d').date()
         num_days = (end_date - start_date).days
         return room_price * num_days
 
+    # Erstellung einer Buchungsbestätigung
     def create_booking_confirmation_file(self, booking, guest, room, total_price):
         hotel = self.__session.query(Hotel).filter(Hotel.id == room.hotel_id).first()
         filename = f"booking_confirmation_{booking.id}.txt"
@@ -86,7 +93,7 @@ class ReservationManager:
             file.write(f"Number of Guests: {booking.number_of_guests}\n")
             file.write(f"Total Price: {total_price}\n")
 
-
+    # Rückgabe von Buchungen eines Benutzers
     def get_bookings_by_user(self, user_id):
         guest_id_query = (
             self.__session.query(RegisteredGuest.id)
@@ -103,6 +110,7 @@ class ReservationManager:
         bookings = booking_query.all()
         return bookings
 
+    # Anzeige aller Buchungen
     def show_all_bookings(self):
         bookings = self.__session.query(Booking).options(joinedload(Booking.room)).all()
         if not bookings:
@@ -110,6 +118,7 @@ class ReservationManager:
         for booking in bookings:
             print(f"Booking ID: {booking.id}, Guest ID: {booking.guest_id}, Room: {booking.room.number}, Hotel ID: {booking.room.hotel_id}, Start Date: {booking.start_date}, End Date: {booking.end_date}")
 
+    # Rückgabe von anstehend Buchungen eines Benutzers
     def get_user_future_bookings(self, user_id):
         guest_id_query = (
             self.__session.query(RegisteredGuest.id)
@@ -127,12 +136,12 @@ class ReservationManager:
         bookings = booking_query.all()
         return bookings
 
+    # Aktualisierung einer Buchung mit Berücksichtigung, ob der Raum an den geänderten Daten auch verfügbar ist
     def update_booking(self, booking_id, user_id, new_start_date, new_end_date):
         booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
         if not booking:
             return False, "Booking not found."
 
-        # Check if the new dates overlap with any other bookings for the same room, excluding the current booking
         overlapping_bookings = (
             self.__session.query(Booking)
             .filter(Booking.room_hotel_id == booking.room_hotel_id)
@@ -147,16 +156,15 @@ class ReservationManager:
 
         if overlapping_bookings:
             return False, "The room is not available for the selected dates."
-
-        # Temporarily update the booking dates for confirmation
         original_start_date = booking.start_date
         original_end_date = booking.end_date
         booking.start_date = new_start_date
         booking.end_date = new_end_date
-        self.__session.flush()  # Use flush instead of commit for temporary update
+        self.__session.flush()  # Flush anstelle von commit für temporäres Update
 
         return True, "Booking dates updated. Please confirm to save changes."
 
+    # Bestätigung der Änderungen einer Buchung
     def confirm_update_booking(self, booking_id, new_start_date, new_end_date):
         booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
         if booking:
@@ -167,6 +175,7 @@ class ReservationManager:
         else:
             return False, "Booking not found."
 
+    # Buchungsaktualisierung rückgängig machen
     def rollback_update_booking(self, booking_id, original_start_date, original_end_date):
         booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
         if booking:
@@ -177,6 +186,7 @@ class ReservationManager:
         else:
             return False, "Booking not found."
 
+    # Löschung einer Buchung
     def delete_booking(self, booking_id):
         booking = self.__session.query(Booking).filter(Booking.id == booking_id).first()
         if booking:
